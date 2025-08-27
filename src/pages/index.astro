@@ -13,37 +13,46 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="about">
+				<h1>Hey :-)</h1>
+				<p>
+					I started my professional career as a Drupal developer but evolved into a full stack developer, which includes anything related to PHP, JavaScript, and WebOps.
+				</p>
+				<p>
+					I am also an open source advocate who has worked primarily in open source solutions for Drupal, Mautic, and WordPress etc..
+				</p>
+				<p>
+					I'm quite active in the community, and we might have met at DrupalCon, such as Singapore 2024 and Atlanta 2025. If we haven't, please feel free to reach out to me virtually on your preferred channel.
+				</p>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+
+<style>
+	.about h1 {
+		margin-bottom: 0.5rem;
+		color: var(--accent);
+	}
+	.about p {
+		line-height: 1.8;
+		margin: 0 0 1rem 0;
+	}
+	.links {
+		list-style: none;
+		padding: 0;
+		margin: 1rem 0 0 0;
+		display: grid;
+		gap: 0.5rem;
+	}
+	.links a {
+		text-decoration: none;
+		border-bottom: 2px solid transparent;
+		color: var(--black);
+	}
+	.links a:hover {
+		border-bottom-color: var(--accent);
+	}
+</style>

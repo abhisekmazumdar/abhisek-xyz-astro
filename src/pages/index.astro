@@ -4,6 +4,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import ProfileImage from '../assets/abhisek.jpg';
+import About from '../content/about.md';
+import { Image } from 'astro:assets';
 ---
 
 <!doctype html>
@@ -16,22 +18,9 @@ import ProfileImage from '../assets/abhisek.jpg';
 		<main>
 			<section class="about">
 				<div class="profile">
-					<img src={ProfileImage.src} alt="Abhisek" class="profile-image" />
+					<Image src={ProfileImage} alt="Abhisek Mazumdar" class="profile-image" sizes="(max-width: 768px) 120px, 150px" loading="eager" fetchpriority="high" />
 					<div class="profile-content">
-						<h1>Hey</h1>
-						<p>
-							Welcome to my website! I'm Abhisek Mazumdar, currently working at <a href="https://dropsolid.com" target="_blank">Dropsolid</a> as a Drupal & Mautic Engineer.
-						</p>
-						<p>
-							I'm a full‑stack developer who began in Drupal and now builds end‑to‑end products across PHP, JavaScript, and WebOps. I care about clean architecture, performance, and a great developer experience.
-						</p>
-						<p>
-							I'm also an open‑source advocate and contributor, with hands‑on experience in Drupal, Mautic, and WordPress and the ecosystems around them.
-							We may have also met at DrupalCon events, such as in Singapore 2024 or Atlanta 2025. If we haven't met yet, please feel free to reach out to me virtually through your preferred channel.
-						</p>
-						<p>
-							I'm a active member of the <a href="https://www.drupalpune.in/" target="_blank">Drupalers Association Pune</a>, and we regularly host meetups. Join for the next meetup checkout <a href="https://www.meetup.com/pune-drupal-group/" target="_blank">meetup.com's page</a>
-						</p>
+						<About />
 					</div>
 				</div>
 			</section>

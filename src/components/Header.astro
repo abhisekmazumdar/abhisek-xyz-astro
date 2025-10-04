@@ -5,11 +5,15 @@ import { SITE_TITLE } from '../consts';
 <header>
 	<nav>
 		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links"></div>
-		<div class="social-links">
-			<a href="https://linkedin.com/in/abhisekmazumdar" target="_blank" aria-label="LinkedIn">
-				<i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
-			</a>
+		<div class="links">
+			<div class="internal-links">
+				<a href="/uses">uses</a>
+			</div>
+			<div class="social-links">
+				<a href="https://linkedin.com/in/abhisekmazumdar" target="_blank" aria-label="LinkedIn">
+					<i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+				</a>
+			</div>
 		</div>
 	</nav>
 </header>
@@ -34,22 +38,30 @@ import { SITE_TITLE } from '../consts';
 		align-items: center;
 		justify-content: space-between;
 	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		text-decoration: none;
+
+	.links {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		font-weight: bold;
 	}
-	.social-links,
+
+	.internal-links {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.internal-links a {
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+	}
+
+	.internal-links a:hover {
+		background: rgba(var(--accent-rgb, 0, 0, 0), 0.04);
+	}
+
 	.social-links a {
 		display: flex;
-	}
-	.social-links i {
-		font-size: 30px;
-		line-height: 1;
-	}
-	@media (max-width: 720px) {
-		.social-links {
-			display: none;
-		}
 	}
 </style>

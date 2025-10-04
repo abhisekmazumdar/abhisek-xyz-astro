@@ -14,9 +14,12 @@ Welcome to my `/uses` page.
 
 -   **2023 MacBook Pro 14‑inch** — 36 GB RAM, M3 Pro
 -   **LG 27‑inch (68.6 cm)** UltraFine Ergo 4K monitor
--   **Keychron K2 V2** — Gateron Brown switches (hot‑swappable), aluminium case, RGB backlight
--   **Logitech MX Master 3S** mouse
--   **Edifier R1280DBs** — bookshelf speakers
+-   **Keychron K2 V2** — Kailh Box V2 Switches, aluminium case, RGB backlight
+-   **Logitech MX Master 3S** mouse - Worlds best mouse for productivity.
+-   **Apple Magic Trackpad** — for gestures when I need them. Also I'm fan of [MKBHD](https://www.youtube.com/user/marquesbrownlee) and saw his setup has this: left hand trackpad and right hand mouse.
+-   **Edifier R1280DBs** — pleasure for my ears when I'm working from home.
+-   **Apple Airpod Max** — for music and calls on the go.
+-   **MAONO DGM20S Mic** - It’s always important for your voice to be heard clearly.
 
 ## Software
 
@@ -35,6 +38,7 @@ Welcome to my `/uses` page.
 -   **OpenRouter** — access to multiple LLM providers for pay‑as‑you‑go usage in the IDE
 -   **Perplexity Pro** and **Comet Browser** — research and web search tools
 -   **Raycast AI** — OS‑level AI assistant
+-   **Ollama** — local LLMs for private use
 
 ## Desk setup
 

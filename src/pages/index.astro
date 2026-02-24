@@ -2,10 +2,26 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import DrupalCredits from '../components/DrupalCredits.astro';
+import { SITE_TITLE, SITE_DESCRIPTION, DRUPAL_ORG_UID, DRUPAL_CREDITS_OVERRIDE, DRUPAL_CREDITS_PROJECTS, DRUPAL_ORG_CREDITS_URL } from '../consts';
+import { getDrupalCredits } from '../lib/drupal-credits';
 import ProfileImage from '../assets/abhisek.jpg';
 import About from '../content/about.md';
 import { Image } from 'astro:assets';
+
+let { total, projects } = await getDrupalCredits({
+	uid: DRUPAL_ORG_UID,
+	projects: DRUPAL_CREDITS_PROJECTS,
+});
+const override = DRUPAL_CREDITS_OVERRIDE;
+if (override) {
+	if (override.total !== undefined) total = override.total;
+	projects = projects.map((p) => ({
+		...p,
+		count: override[p.machineName] ?? p.count,
+	}));
+}
+const creditsForComponent = projects.map(({ label, count }) => ({ label, count }));
 ---
 
 <!doctype html>
@@ -21,6 +37,7 @@ import { Image } from 'astro:assets';
 					<Image src={ProfileImage} alt="Abhisek Mazumdar" class="profile-image" sizes="(max-width: 768px) 120px, 150px" loading="eager" fetchpriority="high" />
 					<div class="profile-content">
 						<About />
+						<DrupalCredits totalCount={total} projects={creditsForComponent} creditsUrl={DRUPAL_ORG_CREDITS_URL} />
 					</div>
 				</div>
 			</section>

@@ -28,4 +28,8 @@ Think of this as my personal notebook that happens to be public. Some entries wi
 
 Because not everything needs to be a 1500-word article. Sometimes a quick note about a great café in Pune or a one-liner shell trick is all that is needed. Logs let me share more, more often, without overthinking it.
 
+## A note on how these are written
+
+Most logs here will be drafted with the help of AI. But every idea, opinion, and story comes from me — Abhisek. AI helps me get the words out faster; I review every piece before it goes live. Nothing gets published unless it truly reflects what I think or stand for. Consider this my commitment to keeping things honest, even when the writing process has a co-pilot.
+
 Stay tuned — the first real log is coming soon.

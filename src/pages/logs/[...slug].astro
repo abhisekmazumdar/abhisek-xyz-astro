@@ -1,0 +1,77 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+	const logs = await getCollection('logs');
+	return logs.map((log) => ({
+		params: { slug: log.id },
+		props: log,
+	}));
+}
+
+type Props = CollectionEntry<'logs'>;
+
+const log = Astro.props;
+const { Content } = await render(log);
+---
+
+<DefaultLayout title={log.data.title} description={log.data.description}>
+	<article class="log-post">
+		<header>
+			<h1>{log.data.title}</h1>
+			<div class="log-meta">
+				<FormattedDate date={log.data.pubDate} />
+				{log.data.updatedDate && (
+					<span class="updated">
+						(updated <FormattedDate date={log.data.updatedDate} />)
+					</span>
+				)}
+			</div>
+		</header>
+		<hr />
+		<div class="log-content">
+			<Content />
+		</div>
+		<footer class="log-footer">
+			<a href="/logs/">&larr; All logs</a>
+		</footer>
+	</article>
+</DefaultLayout>
+
+<style>
+	.log-post {
+		max-width: 100%;
+	}
+	h1 {
+		margin-bottom: 0.25rem;
+	}
+	.log-meta {
+		color: rgb(var(--gray));
+		font-size: 0.95rem;
+		margin-bottom: 1rem;
+	}
+	.updated {
+		font-style: italic;
+	}
+	hr {
+		margin: 1rem 0 1.5rem;
+	}
+	.log-content {
+		line-height: 1.8;
+	}
+	.log-footer {
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.log-footer a {
+		text-decoration: none;
+		font-weight: 600;
+	}
+	.log-footer a:hover {
+		text-decoration: underline;
+	}
+</style>

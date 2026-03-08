@@ -1,0 +1,70 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+
+const logs = (await getCollection('logs')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<DefaultLayout title="Logs" description="Short-form notes, learnings, and updates.">
+	<section>
+		<h1>Logs</h1>
+		<p class="subtitle">Short-form notes, learnings, and updates.</p>
+		<ul class="log-list">
+			{logs.map((log) => (
+				<li>
+					<a href={`/logs/${log.id}/`}>
+						<span class="log-title">{log.data.title}</span>
+						<FormattedDate date={log.data.pubDate} />
+					</a>
+				</li>
+			))}
+		</ul>
+	</section>
+</DefaultLayout>
+
+<style>
+	h1 {
+		margin-bottom: 0.25rem;
+	}
+	.subtitle {
+		color: rgb(var(--gray));
+		font-size: 1rem;
+		margin-bottom: 2rem;
+	}
+	.log-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 0;
+	}
+	.log-list li {
+		border-bottom: 1px solid rgb(var(--gray-light));
+	}
+	.log-list li:first-child {
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.log-list a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 1rem 0;
+		text-decoration: none;
+		color: rgb(var(--black));
+	}
+	.log-list a:hover {
+		color: var(--accent);
+	}
+	.log-title {
+		font-weight: 600;
+	}
+	.log-list time {
+		flex-shrink: 0;
+		color: rgb(var(--gray));
+		font-size: 0.9rem;
+	}
+</style>

@@ -2,6 +2,7 @@
 title: "What Are Logs?"
 description: "An introduction to my logs — a space for anything attention-worthy, from tech to travel."
 pubDate: 2026-02-25
+coverImage: ../../assets/logs/what-are-logs.jpeg
 ---
 
 Welcome to my **logs** — a new section on my site where I share anything that grabs my attention and feels worth putting out there.

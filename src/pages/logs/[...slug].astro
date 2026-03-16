@@ -2,6 +2,7 @@
 import DefaultLayout from '../../layouts/DefaultLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -18,7 +19,7 @@ const log = Astro.props;
 const { Content } = await render(log);
 ---
 
-<DefaultLayout title={log.data.title} description={log.data.description}>
+<DefaultLayout title={log.data.title} description={log.data.description} image={log.data.coverImage}>
 	<article class="log-post">
 		<header>
 			<h1>{log.data.title}</h1>
@@ -30,8 +31,13 @@ const { Content } = await render(log);
 					</span>
 				)}
 			</div>
+			<hr />
+			{log.data.coverImage && (
+				<div class="hero-image">
+					<Image src={log.data.coverImage} alt={log.data.title} width={1200} height={630} />
+				</div>
+			)}
 		</header>
-		<hr />
 		<div class="log-content">
 			<Content />
 		</div>
@@ -44,6 +50,18 @@ const { Content } = await render(log);
 <style>
 	.log-post {
 		max-width: 100%;
+	}
+	.hero-image {
+		margin-bottom: 1.5rem;
+		border-radius: 8px;
+		overflow: hidden;
+		aspect-ratio: 1 / 1;
+	}
+	.hero-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
 	}
 	h1 {
 		margin-bottom: 0.25rem;

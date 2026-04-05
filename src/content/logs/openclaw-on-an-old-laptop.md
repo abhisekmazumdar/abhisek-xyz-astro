@@ -56,7 +56,7 @@ That’s not datacenter hardware, and that’s exactly the point. For an always-
 
 ## The setup process
 
-The actual setup was surprisingly approachable. I mostly built my understanding from [this video](https://youtu.be/T-HZHO_PQPY?si=87wBCYZAakeoyAku), which was shared with me by my good friend **Sergiu**, who works with me at **Dropsolid AI**.
+The actual setup was surprisingly approachable. I mostly built my understanding from [this video](https://youtu.be/T-HZHO_PQPY?si=87wBCYZAakeoyAku), which was shared with me by my good friend [Sergiu Nagailic](https://www.linkedin.com/in/nagailic), who works with me at [Dropsolid AI](https://dropsolid.ai/).
 
 At a high level, I:
 
@@ -87,17 +87,18 @@ At this point, the setup can already do quite a few genuinely useful things for 
 A few examples:
 
 - check my email and notify me about important messages
-- send me scheduled reminders, including medication reminders
+- send me scheduled reminders for day-to-day stuff
+- run cron-based checks and alerts on a schedule
 - inspect local repositories for personal projects
 - clone and run websites locally, including [abhisek.xyz](https://www.abhisek.xyz/) and [sanjeevneeabhisek.love](https://sanjeevneeabhisek.love/)
-- help me understand project structure and tech stacks
+- help me understand project structure, file layout, and tech stacks
 - work with GitHub through SSH and the GitHub CLI
 - maintain notes and memory in a local workspace
 - respond to me over Telegram in a way that feels conversational, not just transactional
 
-And beyond my own setup, OpenClaw itself has some genuinely nice capabilities built in. It can act as a multi-channel gateway, connect to chat apps like Telegram and WhatsApp, manage isolated sessions, support media like images and audio, and provide a browser control UI for chats, config, and sessions.
+And beyond my own setup, OpenClaw itself has some genuinely useful building blocks. It can run as a local gateway for chat channels, support scheduled cron jobs, maintain separate sessions, work with files and shell commands, connect to external tools and services, and provide a control UI for configuration, sessions, and system status.
 
-That’s what makes this setup fun. It’s not just a chatbot living on an old laptop. It’s starting to feel like a real personal assistant system.
+That’s what makes this setup fun. It’s not just a chatbot living on an old laptop. It’s starting to feel more like a real personal assistant system.
 
 ## Why I like this setup
 

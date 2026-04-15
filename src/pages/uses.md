@@ -35,10 +35,9 @@ Welcome to my `/uses` page.
 
 ## AI
 
--   **OpenRouter** — access to multiple LLM providers for pay‑as‑you‑go usage in the IDE
--   **Perplexity Pro** and **Comet Browser** — research and web search tools
--   **Raycast AI** — OS‑level AI assistant
--   **Ollama** — local LLMs for private use
+-   **[Claude Code](https://claude.ai/code)** (Pro) — my go‑to for all coding related stuff. In a gist, Claude Code is like that needy friend who is much better at coding than me — but it lacks architecture knowledge, and that's where I come in to guide it.
+-   **[ChatGPT](https://chatgpt.com/)** — for day‑to‑day general stuff. Really good with writing, explaining how the world works — just a good friend who is great at talking. 😀
+-   **[OpenClaw](https://openclaw.dev/)** — currently giving it a try, but it doesn't look like I'll continue. Check out [my log on setting it up](/logs/openclaw-on-an-old-laptop/) if you're curious.
 
 ## Desk setup
 

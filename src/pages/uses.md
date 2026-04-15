@@ -49,6 +49,6 @@ Welcome to my `/uses` page.
 
 I will do my best to keep this information up‑to‑date. Please contact me on [LinkedIn](https://www.linkedin.com/in/abhisekmazumdar) if you need more information or suggestions.
 
-<em>Some descriptions on this page were written with the help of AI.</em>
+<em>Heads up — some of the descriptions on this page had a little help from AI. Feels only right to mention it, given the section above. 😄</em>
 
 <em>Last updated: 15 Apr 2026</em>

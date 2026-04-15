@@ -23,9 +23,9 @@ Welcome to my `/uses` page.
 
 ## Software
 
--   **[PhpStorm](https://www.jetbrains.com/phpstorm/)** — for PHP development
 -   **[Visual Studio Code](https://code.visualstudio.com/)** — AI‑assisted coding using **Claude Code**
--   **[Warp](https://www.warp.dev/)** — default terminal. I really love the workflows feature. The newly launched AI agent support with cmux is a great addition too.
+-   **[PhpStorm](https://www.jetbrains.com/phpstorm/)** — for PHP development. I find myself opening it less and less these days.
+-   **[Warp](https://www.warp.dev/)** — default terminal. I'm really hooked to the workflows feature. The newly launched [Universal Agent Support](https://www.warp.dev/blog/universal-agent-support-level-up-coding-agent-warp) like [cmux](https://cmux.com/) is a great addition too.
 -   **[lazygit](https://github.com/jesseduffield/lazygit)** - I don’t typically use this, but I would like to mention this.
 -   **[Sequel Ace](https://sequel-ace.com/)** — preferred GUI for database work (I avoid running DB queries from the CLI when possible)
 -   **[Chrome](https://www.google.com/chrome/)** — work browser

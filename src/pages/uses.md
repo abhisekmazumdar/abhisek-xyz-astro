@@ -8,8 +8,6 @@ description: "Tools, hardware, and software I use"
 
 Welcome to my `/uses` page.
 
-> Concept and inspiration from [Brian Perry](https://www.brianperry.dev/uses/) and [Matt Glaman](https://mglaman.dev/uses).
-
 ## Hardware
 
 -   **2023 MacBook Pro 14‑inch** — 36 GB RAM, M3 Pro
@@ -50,5 +48,7 @@ Welcome to my `/uses` page.
 I will do my best to keep this information up‑to‑date. Please contact me on [LinkedIn](https://www.linkedin.com/in/abhisekmazumdar) if you need more information or suggestions.
 
 <em>Some of the descriptions here were written with a little AI help. The em dashes probably already gave it away. 🤷‍♂️</em>
+
+> Concept and inspiration from [Brian Perry](https://www.brianperry.dev/uses/) and [Matt Glaman](https://mglaman.dev/uses).
 
 <em>Last updated: 15 Apr 2026</em>

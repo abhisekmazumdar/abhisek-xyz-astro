@@ -29,9 +29,9 @@ Welcome to my `/uses` page.
 -   **[lazygit](https://github.com/jesseduffield/lazygit)** - I don’t typically use this, but I would like to mention this.
 -   **[Sequel Ace](https://sequel-ace.com/)** — preferred GUI for database work (I avoid running DB queries from the CLI when possible)
 -   **[Chrome](https://www.google.com/chrome/)** — work browser
--   **[Safari](https://www.apple.com/safari/)** — personal browsing. Safari is great and saves a lot of battery when I'm remote and need to conserve power — Chrome just eats through it fast, even though MacBook batteries are really good.
+-   **[Safari](https://www.apple.com/safari/)** — personal browsing. Safari is great and saves a lot of battery when I'm remote and need to conserve power — Chrome just eats through it fast, even though MacBook battery backup are really good.
 -   **[Raycast](https://www.raycast.com/pro)** — I just can't imagine my life without it. I'm too dependent on it at this point. It packs so many productive tools that it's absolutely worth paying for.
--   **[Notion](https://www.notion.so/)** — really good for a lot of personal important notes and databases. The calendar is particularly important to me — it gives a single view of my work and personal schedule, which keeps everything in order.
+-   **[Notion](https://www.notion.so/)** — really important for a lot of personal notes and databases. The calendar is particularly important to me — it gives a single view of my work and personal schedule, which keeps everything in order.
 
 ## AI
 

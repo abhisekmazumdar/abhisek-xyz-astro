@@ -24,12 +24,12 @@ Welcome to my `/uses` page.
 ## Software
 
 -   **[PhpStorm](https://www.jetbrains.com/phpstorm/)** — for PHP development
--   **[Visual Studio Code](https://code.visualstudio.com/)** — AI‑assisted coding using extensions like **Roo Code** and GitHub Copilot (via OpenRouter)
--   **[Warp](https://www.warp.dev/)** — default terminal (I use Warp UI, tab management and workflows heavily)
+-   **[Visual Studio Code](https://code.visualstudio.com/)** — AI‑assisted coding using **Claude Code**
+-   **[Warp](https://www.warp.dev/)** — default terminal. I really love the workflows feature. The newly launched AI agent support with cmux is a great addition too.
 -   **[lazygit](https://github.com/jesseduffield/lazygit)** - I don’t typically use this, but I would like to mention this.
 -   **[Sequel Ace](https://sequel-ace.com/)** — preferred GUI for database work (I avoid running DB queries from the CLI when possible)
--   **[Zen](https://zen-browser.app/)** — work browser
--   **[Firefox](https://www.firefox.com/en-US/)** — personal browsing
+-   **[Chrome](https://www.google.com/chrome/)** — work browser
+-   **[Safari](https://www.apple.com/safari/)** — personal browsing. Safari is great and saves a lot of battery when I'm remote and need to conserve power — Chrome just eats through it fast, even though MacBook batteries are really good.
 -   **[Raycast](https://www.raycast.com/pro)** — productivity launcher and OS‑level AI assistant (alternative to Spotlight)
 -   **[Notion](https://www.notion.so/)** — notes and calendar
 
@@ -50,4 +50,4 @@ Welcome to my `/uses` page.
 
 I will do my best to keep this information up‑to‑date. Please contact me on [LinkedIn](https://www.linkedin.com/in/abhisekmazumdar) if you need more information or suggestions.
 
-<em>Last updated: 4 Oct 2025</em>
+<em>Last updated: 15 Apr 2026</em>

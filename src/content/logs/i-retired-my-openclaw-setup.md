@@ -40,7 +40,7 @@ Running Ollama on the HP ENVY was painfully slow. I tried switching between GPU 
 
 ## Codex wasn't the answer either
 
-While rethinking all of this, Codex seemed like the natural next thing to try, so I gave it a real shot. It had its own frustrations — inconsistent, occasionally just wrong in obvious ways.
+While rethinking all of this, Codex seemed like the natural next thing to try. I gave it a real shot. It had its own frustrations — inconsistent, occasionally just wrong in obvious ways.
 
 And then Anthropic [changed the policy](https://www.pcmag.com/news/anthropic-you-cant-use-openclaw-with-claude-without-paying-extra). As of April 2026, using OpenClaw with Claude no longer falls under your subscription — it counts as extra uses. I found out about this change on the subreddit, ironically just after I'd set up my OpenClaw instance.
 

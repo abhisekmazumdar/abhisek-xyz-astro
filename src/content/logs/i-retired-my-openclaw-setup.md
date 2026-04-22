@@ -42,7 +42,7 @@ Running Ollama on the HP ENVY was painfully slow. I tried switching between GPU 
 
 While rethinking all of this, Codex seemed like the natural next thing to try, so I gave it a real shot. It had its own frustrations — inconsistent, occasionally just wrong in obvious ways.
 
-And then Anthropic [changed the pricing](https://www.pcmag.com/news/anthropic-you-cant-use-openclaw-with-claude-without-paying-extra). As of April 2026, using OpenClaw with Claude no longer falls under your subscription — every task is billed separately on top. I found out about this change on the subreddit, ironically just after I'd set up my OpenClaw instance.
+And then Anthropic [changed the policy](https://www.pcmag.com/news/anthropic-you-cant-use-openclaw-with-claude-without-paying-extra). As of April 2026, using OpenClaw with Claude no longer falls under your subscription — it counts as extra uses. I found out about this change on the subreddit, ironically just after I'd set up my OpenClaw instance.
 
 ## What the laptop does now
 
@@ -60,11 +60,9 @@ It also changed how I think about what's possible with this generation of AI too
 
 The possibilities genuinely excite me. I don't know how all of this turns out. Nobody does. But I know it's real, it's here, and it's moving fast. The internet felt the same way when it arrived — I was too young to make any real decisions about it back then. The ones who kept exploring figured it out. Those explorers built the big tech companies we know today. Now those same companies — Google, Apple — are being challenged by a new wave: OpenAI, Anthropic, and others.
 
-History has a pattern. Pay attention to it.
+History has a pattern.
 
-That's where I want to be. Exploring, not watching.
-
-ps: Writing this over a good cold black coffee. As one does.
+I love exploring and experimenting with new things and experiences.
 
 ---
 

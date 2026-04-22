@@ -62,8 +62,6 @@ The possibilities genuinely excite me. I don't know how all of this turns out. N
 
 History has a pattern.
 
-I love exploring and experimenting with new things and experiences.
-
 ---
 
 If any of this resonates or you're thinking through a similar setup, I'm always up for a conversation — find me on [LinkedIn](https://www.linkedin.com/in/abhisekmazumdar/).

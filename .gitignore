@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # cursor settings
 .cursor/
+
+# claude local setting
+.claude/settings.local.json

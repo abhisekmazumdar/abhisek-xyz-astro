@@ -1,5 +1,5 @@
 ---
-title: "Why I Killed My OpenClaw Setup"
+title: "I Retired My OpenClaw Setup. Here's What I Learned."
 description: "A follow-up to setting up OpenClaw on an old laptop — why I shut it down, what changed, and what I took away from the experiment."
 pubDate: 2026-04-22
 ---

@@ -1,104 +1,53 @@
 ---
 interface ProjectCount {
-	label: string;
-	count: number;
+  label: string;
+  count: number;
 }
 
 interface Props {
-	totalCount: number;
-	projects: ProjectCount[];
-	creditsUrl?: string;
+  totalCount: number;
+  projects: ProjectCount[];
+  creditsUrl?: string;
 }
 
-const { totalCount, projects, creditsUrl = 'https://www.drupal.org/user/3557964/contribution-records' } = Astro.props;
+const {
+  totalCount,
+  projects,
+  creditsUrl = 'https://www.drupal.org/user/3557964/contribution-records',
+} = Astro.props;
 ---
 
-<section class="drupal-credits" aria-labelledby="drupal-credits-heading">
-	<h2 id="drupal-credits-heading" class="credits-heading">Credit stats from Drupal.org profile</h2>
-	<p class="credits-total">
-		<span class="credits-total-text">My total contribution credits </span>
-		<span class="credits-total-count" aria-label="Total contribution credits">{totalCount}</span>
-	</p>
-	{projects.length > 0 && (
-		<>
-			<p class="credits-subheading">Some of the main areas of contributions:</p>
-			<ul class="credits-list" aria-label="Highlighted projects">
-				{projects.map((p) => (
-					<li>
-						<span class="credits-label">{p.label}</span>
-						<span class="credits-count" aria-label={`${p.label} credits`}>{p.count}</span>
-					</li>
-				))}
-			</ul>
-		</>
-	)}
-	<a href={creditsUrl} class="credits-link" target="_blank" rel="noopener noreferrer">
-		View all on Drupal.org
-	</a>
-</section>
+<div class="drupal-card mt-6 rounded-xl border p-5" style="border-color: rgb(var(--gray-light)); background: rgb(var(--gray-light), 0.15);">
+  <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: rgb(var(--gray));">
+    Open Source Contributions
+  </p>
 
-<style>
-	.drupal-credits {
-		margin-top: 2rem;
-		padding: 1.25rem;
-		border: 1px solid rgb(var(--gray-light));
-		border-radius: 8px;
-		text-align: left;
-	}
-	.credits-heading {
-		font-size: 1rem;
-		font-weight: 600;
-		color: rgb(var(--black));
-		margin: 0 0 0.75rem 0;
-	}
-	.credits-total {
-		margin: 0 0 0.75rem 0;
-		padding-bottom: 0.75rem;
-		border-bottom: 1px solid rgb(var(--gray-light));
-		line-height: 1.5;
-	}
-	.credits-total-text {
-		color: rgb(var(--black));
-	}
-	.credits-total-count {
-		font-weight: 700;
-		color: var(--accent);
-		font-size: 1.1rem;
-	}
-	.credits-total-suffix {
-		color: rgb(var(--black));
-	}
-	.credits-subheading {
-		font-size: 0.95rem;
-		color: rgb(var(--gray-dark));
-		margin: 0 0 0.5rem 0;
-	}
-	.credits-list {
-		list-style: none;
-		padding: 0;
-		margin: 0 0 1rem 0;
-		display: grid;
-		gap: 0.5rem;
-	}
-	.credits-list li {
-		display: flex;
-		align-items: baseline;
-		gap: 0.5rem;
-	}
-	.credits-label {
-		color: rgb(var(--gray-dark));
-	}
-	.credits-count {
-		font-weight: 600;
-		color: var(--accent);
-	}
-	.credits-link {
-		font-size: 0.9rem;
-		text-decoration: none;
-		color: var(--accent);
-		border-bottom: 2px solid transparent;
-	}
-	.credits-link:hover {
-		border-bottom-color: var(--accent);
-	}
-</style>
+  <div class="flex items-baseline gap-2 mb-4">
+    <span class="text-4xl font-bold" style="color: var(--accent);">{totalCount}</span>
+    <span class="text-sm" style="color: rgb(var(--gray-dark));">credits on Drupal.org</span>
+  </div>
+
+  {projects.length > 0 && (
+    <div class="flex flex-wrap gap-2 mb-4">
+      {projects.map((p) => (
+        <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border" style="border-color: rgb(var(--gray-light)); background: rgb(var(--gray-light), 0.4); color: rgb(var(--gray-dark));">
+          {p.label}
+          <span class="font-bold" style="color: var(--accent);">{p.count}</span>
+        </span>
+      ))}
+    </div>
+  )}
+
+  <a
+    href={creditsUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="inline-flex items-center gap-1 text-sm font-medium no-underline transition-opacity hover:opacity-70"
+    style="color: var(--accent);"
+  >
+    View all on Drupal.org
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 7h10v10"/><path d="M7 17 17 7"/>
+    </svg>
+  </a>
+</div>

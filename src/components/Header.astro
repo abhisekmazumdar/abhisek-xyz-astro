@@ -1,131 +1,93 @@
 ---
 import { SITE_TITLE } from '../consts';
+import MobileNav from './MobileNav';
+
+const currentPath = Astro.url.pathname;
 ---
 
-<header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="links">
-			<div class="internal-links">
-				<a href="/logs">logs</a>
-				<a href="/uses">uses</a>
-			</div>
-			<div class="social-links">
-				<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-					<i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
-				</button>
-			</div>
-		</div>
-	</nav>
+<header class="sticky top-0 z-40 w-full border-b" style="background: var(--header-bg); border-color: rgb(var(--gray-light));">
+  <div class="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4">
+    <!-- Logo -->
+    <a
+      href="/"
+      class="font-bold text-base no-underline"
+      style="color: rgb(var(--black));"
+    >
+      {SITE_TITLE}
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden md:flex items-center gap-1">
+      {[
+        { href: '/logs', label: 'logs' },
+        { href: '/uses', label: 'uses' },
+      ].map(({ href, label }) => (
+        <a
+          href={href}
+          class={[
+            'px-3 py-1.5 rounded-md text-sm font-medium no-underline transition-colors',
+            currentPath === href || currentPath.startsWith(href + '/')
+              ? 'text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.08)]'
+              : 'text-[rgb(var(--gray-dark))] hover:text-[rgb(var(--black))] hover:bg-[rgb(var(--gray-light),0.5)]',
+          ].join(' ')}
+        >
+          {label}
+        </a>
+      ))}
+
+      <button
+        id="theme-toggle"
+        class="ml-1 p-2 rounded-md cursor-pointer border-0 bg-transparent transition-colors hover:bg-[rgba(var(--accent-rgb),0.08)]"
+        style="color: var(--accent);"
+        aria-label="Toggle dark mode"
+      >
+        <i id="theme-icon" class="fa-solid fa-moon text-base" aria-hidden="true"></i>
+      </button>
+    </nav>
+
+    <!-- Mobile: theme toggle + hamburger -->
+    <div class="flex md:hidden items-center gap-1">
+      <button
+        id="theme-toggle-mobile"
+        class="p-2 rounded-md cursor-pointer border-0 bg-transparent transition-colors hover:bg-[rgba(var(--accent-rgb),0.08)]"
+        style="color: var(--accent);"
+        aria-label="Toggle dark mode"
+      >
+        <i id="theme-icon-mobile" class="fa-solid fa-moon text-base" aria-hidden="true"></i>
+      </button>
+      <MobileNav currentPath={currentPath} client:only="react" />
+    </div>
+  </div>
 </header>
-<style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: var(--header-bg);
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
-
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.75em 0;
-	}
-
-	.links {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		font-weight: bold;
-	}
-
-	.internal-links {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.internal-links a {
-		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
-	}
-
-	.internal-links a:hover {
-		background: rgba(var(--accent-rgb, 0, 0, 0), 0.04);
-	}
-
-	.social-links {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.social-links a {
-		display: flex;
-		align-items: center;
-		line-height: 1;
-		padding: 0.25rem 0.4rem;
-		border-radius: 4px;
-	}
-
-	.social-links a:hover {
-		background: rgba(var(--accent-rgb), 0.04);
-	}
-
-	.theme-toggle {
-		background: none;
-		border: none;
-		cursor: pointer;
-		color: var(--accent);
-		font-size: 1em;
-		padding: 0.25rem 0.4rem;
-		border-radius: 4px;
-		display: flex;
-		align-items: center;
-		line-height: 1;
-	}
-
-	.theme-toggle:hover {
-		background: rgba(var(--accent-rgb), 0.08);
-	}
-</style>
 
 <script>
-	const toggle = document.getElementById('theme-toggle');
-	const icon = document.getElementById('theme-icon');
+  function updateIcons(theme: string) {
+    const cls = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    const desktop = document.getElementById('theme-icon');
+    const mobile = document.getElementById('theme-icon-mobile');
+    if (desktop) desktop.className = cls;
+    if (mobile) mobile.className = cls;
+  }
 
-	function updateIcon(theme: string) {
-		if (icon) {
-			icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-		}
-	}
+  const currentTheme = document.documentElement.getAttribute('data-theme') ?? 'light';
+  updateIcons(currentTheme);
 
-	// Set icon based on current theme (already applied by BaseHead inline script)
-	updateIcon(document.documentElement.getAttribute('data-theme') ?? 'light');
+  function handleToggle() {
+    const current = document.documentElement.getAttribute('data-theme') ?? 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateIcons(next);
+  }
 
-	toggle?.addEventListener('click', () => {
-		const current = document.documentElement.getAttribute('data-theme') ?? 'light';
-		const next = current === 'dark' ? 'light' : 'dark';
-		document.documentElement.setAttribute('data-theme', next);
-		localStorage.setItem('theme', next);
-		updateIcon(next);
-	});
+  document.getElementById('theme-toggle')?.addEventListener('click', handleToggle);
+  document.getElementById('theme-toggle-mobile')?.addEventListener('click', handleToggle);
 
-	// Sync with system preference changes (only when user hasn't manually set a preference)
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-		if (!localStorage.getItem('theme')) {
-			const theme = e.matches ? 'dark' : 'light';
-			document.documentElement.setAttribute('data-theme', theme);
-			updateIcon(theme);
-		}
-	});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      const theme = e.matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      updateIcons(theme);
+    }
+  });
 </script>

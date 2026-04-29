@@ -6,11 +6,11 @@ import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-	const logs = await getCollection('logs');
-	return logs.map((log) => ({
-		params: { slug: log.id },
-		props: log,
-	}));
+  const logs = await getCollection('logs');
+  return logs.map((log) => ({
+    params: { slug: log.id },
+    props: log,
+  }));
 }
 
 type Props = CollectionEntry<'logs'>;
@@ -20,76 +20,103 @@ const { Content } = await render(log);
 ---
 
 <DefaultLayout title={log.data.title} description={log.data.description} image={log.data.coverImage}>
-	<article class="log-post">
-		<header>
-			<h1>{log.data.title}</h1>
-			<div class="log-meta">
-				<FormattedDate date={log.data.pubDate} />
-				{log.data.updatedDate && (
-					<span class="updated">
-						(updated <FormattedDate date={log.data.updatedDate} />)
-					</span>
-				)}
-			</div>
-			<hr />
-			{log.data.coverImage && (
-				<div class="hero-image">
-					<Image src={log.data.coverImage} alt={log.data.title} width={1200} height={630} />
-				</div>
-			)}
-		</header>
-		<div class="log-content">
-			<Content />
-		</div>
-		<footer class="log-footer">
-			<a href="/logs/">&larr; All logs</a>
-		</footer>
-	</article>
+  <article class="log-post">
+    <!-- Back link -->
+    <a
+      href="/logs/"
+      class="inline-flex items-center gap-1.5 text-sm font-medium no-underline transition-opacity hover:opacity-70 mb-8 group"
+      style="color: rgb(var(--gray));"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-x-0.5" aria-hidden="true">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      All logs
+    </a>
+
+    <header class="mb-8">
+      <!-- Meta badge row -->
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border" style="border-color: rgb(var(--gray-light)); color: rgb(var(--gray)); background: rgb(var(--gray-light), 0.4);">
+          <FormattedDate date={log.data.pubDate} />
+        </span>
+        {log.data.updatedDate && (
+          <span class="text-xs italic" style="color: rgb(var(--gray));">
+            updated <FormattedDate date={log.data.updatedDate} />
+          </span>
+        )}
+      </div>
+
+      <h1 class="text-3xl font-bold leading-tight mb-4" style="color: rgb(var(--black));">
+        {log.data.title}
+      </h1>
+
+      {log.data.description && (
+        <p class="text-lg leading-relaxed m-0" style="color: rgb(var(--gray));">
+          {log.data.description}
+        </p>
+      )}
+    </header>
+
+    {log.data.coverImage && (
+      <div class="rounded-xl overflow-hidden mb-8" style="aspect-ratio: 16/9;">
+        <Image
+          src={log.data.coverImage}
+          alt={log.data.title}
+          width={1200}
+          height={630}
+          class="w-full h-full object-cover"
+          style="border-radius: 0; margin: 0;"
+        />
+      </div>
+    )}
+
+    <div class="log-content">
+      <Content />
+    </div>
+
+    <footer class="log-footer mt-12 pt-6 flex items-center justify-between" style="border-top: 1px solid rgb(var(--gray-light));">
+      <a
+        href="/logs/"
+        class="inline-flex items-center gap-1.5 text-sm font-medium no-underline transition-opacity hover:opacity-70 group"
+        style="color: var(--accent);"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-x-0.5" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+        All logs
+      </a>
+    </footer>
+  </article>
 </DefaultLayout>
 
 <style>
-	.log-post {
-		max-width: 100%;
-	}
-	.hero-image {
-		margin-bottom: 1.5rem;
-		border-radius: 8px;
-		overflow: hidden;
-		aspect-ratio: 1 / 1;
-	}
-	.hero-image img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		display: block;
-	}
-	h1 {
-		margin-bottom: 0.25rem;
-	}
-	.log-meta {
-		color: rgb(var(--gray));
-		font-size: 0.95rem;
-		margin-bottom: 1rem;
-	}
-	.updated {
-		font-style: italic;
-	}
-	hr {
-		margin: 1rem 0 1.5rem;
-	}
-	.log-content {
-		line-height: 1.8;
-	}
-	.log-footer {
-		margin-top: 3rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid rgb(var(--gray-light));
-	}
-	.log-footer a {
-		text-decoration: none;
-		font-weight: 600;
-	}
-	.log-footer a:hover {
-		text-decoration: underline;
-	}
+  .log-content {
+    line-height: 1.8;
+  }
+  .log-content :global(p) {
+    margin-bottom: 1.5em;
+  }
+  .log-content :global(h2),
+  .log-content :global(h3),
+  .log-content :global(h4) {
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+  .log-content :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .log-content :global(img) {
+    border-radius: 8px;
+    margin: 1.5em auto;
+    display: block;
+  }
+  .log-content :global(ul),
+  .log-content :global(ol) {
+    padding-left: 1.5em;
+    margin-bottom: 1.5em;
+  }
+  .log-content :global(li) {
+    margin-bottom: 0.5em;
+  }
 </style>

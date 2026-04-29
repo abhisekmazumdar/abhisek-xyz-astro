@@ -3,99 +3,100 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DrupalCredits from '../components/DrupalCredits.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, DRUPAL_ORG_UID, DRUPAL_CREDITS_OVERRIDE, DRUPAL_CREDITS_PROJECTS, DRUPAL_ORG_CREDITS_URL } from '../consts';
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  DRUPAL_ORG_UID,
+  DRUPAL_CREDITS_OVERRIDE,
+  DRUPAL_CREDITS_PROJECTS,
+  DRUPAL_ORG_CREDITS_URL,
+} from '../consts';
 import { getDrupalCredits } from '../lib/drupal-credits';
 import ProfileImage from '../assets/abhisek.jpg';
 import About from '../content/about.md';
 import { Image } from 'astro:assets';
 
 let { total, projects } = await getDrupalCredits({
-	uid: DRUPAL_ORG_UID,
-	projects: DRUPAL_CREDITS_PROJECTS,
+  uid: DRUPAL_ORG_UID,
+  projects: DRUPAL_CREDITS_PROJECTS,
 });
 const override = DRUPAL_CREDITS_OVERRIDE;
 if (override) {
-	if (override.total !== undefined) total = override.total;
-	projects = projects.map((p) => ({
-		...p,
-		count: override[p.machineName] ?? p.count,
-	}));
+  if (override.total !== undefined) total = override.total;
+  projects = projects.map((p) => ({
+    ...p,
+    count: override[p.machineName] ?? p.count,
+  }));
 }
 const creditsForComponent = projects.map(({ label, count }) => ({ label, count }));
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section class="about">
-				<div class="profile">
-					<Image src={ProfileImage} alt="Abhisek Mazumdar" class="profile-image" sizes="(max-width: 768px) 120px, 150px" loading="eager" fetchpriority="high" />
-					<div class="profile-content">
-						<About />
-						<DrupalCredits totalCount={total} projects={creditsForComponent} creditsUrl={DRUPAL_ORG_CREDITS_URL} />
-					</div>
-				</div>
-			</section>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main class="flex-1 flex items-center justify-center px-4 py-16">
+      <div class="w-full max-w-2xl">
+        <!-- Profile image -->
+        <div class="flex justify-center mb-8">
+          <div class="relative">
+            <Image
+              src={ProfileImage}
+              alt="Abhisek Mazumdar"
+              class="profile-img rounded-full object-cover"
+              style="width: 140px; height: 140px;"
+              sizes="(max-width: 768px) 120px, 140px"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+
+        <!-- Bio content from about.md -->
+        <div class="prose-content mb-2">
+          <About />
+        </div>
+
+        <!-- Drupal contribution stats -->
+        <DrupalCredits
+          totalCount={total}
+          projects={creditsForComponent}
+          creditsUrl={DRUPAL_ORG_CREDITS_URL}
+        />
+      </div>
+    </main>
+    <Footer />
+  </body>
 </html>
 
-
 <style>
-	.about {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		min-height: 60vh;
-	}
-	.profile {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		max-width: 800px;
-		width: 100%;
-		text-align: center;
-	}
-	.profile-image {
-		width: 150px;
-		height: 150px;
-		border-radius: 50%;
-		object-fit: cover;
-		margin-bottom: 2rem;
-	}
-	.profile-content {
-		width: 100%;
-	}
-	.about p {
-		line-height: 1.8;
-		margin: 0 0 1rem 0;
-		text-align: left;
-	}
-	.links {
-		list-style: none;
-		padding: 0;
-		margin: 1rem 0 0 0;
-		display: grid;
-		gap: 0.5rem;
-	}
-	.links a {
-		text-decoration: none;
-		border-bottom: 2px solid transparent;
-		color: var(--black);
-	}
-	.links a:hover {
-		border-bottom-color: var(--accent);
-	}
-	@media (max-width: 768px) {
-		.profile-image {
-			width: 120px;
-			height: 120px;
-		}
-	}
+  .prose-content :global(p) {
+    line-height: 1.8;
+    margin: 0 0 1rem 0;
+    text-align: left;
+    color: rgb(var(--gray-dark));
+  }
+  .prose-content :global(p:first-child) {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    font-weight: 600;
+    color: rgb(var(--black));
+    margin-bottom: 1.25rem;
+  }
+  .prose-content :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .prose-content :global(a:hover) {
+    border-bottom-color: var(--accent);
+  }
+  .profile-img {
+    border: 3px solid rgb(var(--gray-light));
+    box-shadow: 0 4px 20px rgba(var(--gray), 20%);
+  }
 </style>

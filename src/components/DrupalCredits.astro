@@ -3,13 +3,11 @@ interface ProjectCount {
   label: string;
   count: number;
 }
-
 interface Props {
   totalCount: number;
   projects: ProjectCount[];
   creditsUrl?: string;
 }
-
 const {
   totalCount,
   projects,
@@ -17,37 +15,100 @@ const {
 } = Astro.props;
 ---
 
-<div class="drupal-card mt-6 rounded-xl border p-5" style="border-color: rgb(var(--gray-light)); background: rgb(var(--gray-light), 0.15);">
-  <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: rgb(var(--gray));">
-    Open Source Contributions
-  </p>
+<div class="credits-card">
+  <p class="credits-eyebrow">Open Source Contributions</p>
 
-  <div class="flex items-baseline gap-2 mb-4">
-    <span class="text-4xl font-bold" style="color: var(--accent);">{totalCount}</span>
-    <span class="text-sm" style="color: rgb(var(--gray-dark));">credits on Drupal.org</span>
+  <div class="credits-total-row">
+    <span class="credits-count">{totalCount}</span>
+    <span class="credits-count-label">credits on Drupal.org</span>
   </div>
 
   {projects.length > 0 && (
-    <div class="flex flex-wrap gap-2 mb-4">
+    <div class="credits-pills">
       {projects.map((p) => (
-        <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border" style="border-color: rgb(var(--gray-light)); background: rgb(var(--gray-light), 0.4); color: rgb(var(--gray-dark));">
+        <span class="credits-pill">
           {p.label}
-          <span class="font-bold" style="color: var(--accent);">{p.count}</span>
+          <span class="credits-pill-count">{p.count}</span>
         </span>
       ))}
     </div>
   )}
 
-  <a
-    href={creditsUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="inline-flex items-center gap-1 text-sm font-medium no-underline transition-opacity hover:opacity-70"
-    style="color: var(--accent);"
-  >
+  <a href={creditsUrl} target="_blank" rel="noopener noreferrer" class="credits-link">
     View all on Drupal.org
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M7 7h10v10"/><path d="M7 17 17 7"/>
     </svg>
   </a>
 </div>
+
+<style>
+  .credits-card {
+    margin-top: 1.75rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 12px;
+    background: rgba(var(--accent-rgb), 0.03);
+    border-left: 3px solid rgba(var(--accent-rgb), 0.35);
+  }
+  .credits-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgb(var(--gray));
+    margin: 0 0 0.75rem;
+  }
+  .credits-total-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.875rem;
+  }
+  .credits-count {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .credits-count-label {
+    font-size: 0.875rem;
+    color: rgb(var(--gray-dark));
+  }
+  .credits-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .credits-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--gray-light));
+    background: rgb(var(--gray-light));
+    color: rgb(var(--gray-dark));
+  }
+  .credits-pill-count {
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .credits-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .credits-link:hover {
+    opacity: 0.75;
+    text-decoration: none;
+  }
+</style>

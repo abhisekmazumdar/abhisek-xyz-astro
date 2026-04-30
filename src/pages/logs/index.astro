@@ -4,67 +4,125 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import { getCollection } from 'astro:content';
 
 const logs = (await getCollection('logs')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
 <DefaultLayout title="Logs" description="Short-form notes, learnings, and updates.">
-	<section>
-		<h1>Logs</h1>
-		<p class="subtitle">Short-form notes, learnings, and updates.</p>
-		<ul class="log-list">
-			{logs.map((log) => (
-				<li>
-					<a href={`/logs/${log.id}/`}>
-						<span class="log-title">{log.data.title}</span>
-						<FormattedDate date={log.data.pubDate} />
-					</a>
-				</li>
-			))}
-		</ul>
-	</section>
+  <section>
+    <div class="logs-header">
+      <h1>Logs</h1>
+      <p class="subtitle">Short-form notes, learnings, and updates.</p>
+    </div>
+
+    <ul class="log-grid">
+      {logs.map((log) => (
+        <li>
+          <a href={`/logs/${log.id}/`} class="log-card">
+            <div class="log-card-body">
+              <span class="log-title">{log.data.title}</span>
+              {log.data.description && (
+                <span class="log-desc">{log.data.description}</span>
+              )}
+            </div>
+            <span class="log-date">
+              <FormattedDate date={log.data.pubDate} />
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
 </DefaultLayout>
 
 <style>
-	h1 {
-		margin-bottom: 0.25rem;
-	}
-	.subtitle {
-		color: rgb(var(--gray));
-		font-size: 1rem;
-		margin-bottom: 2rem;
-	}
-	.log-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: grid;
-		gap: 0;
-	}
-	.log-list li {
-		border-bottom: 1px solid rgb(var(--gray-light));
-	}
-	.log-list li:first-child {
-		border-top: 1px solid rgb(var(--gray-light));
-	}
-	.log-list a {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 1rem;
-		padding: 1rem 0;
-		text-decoration: none;
-		color: rgb(var(--black));
-	}
-	.log-list a:hover {
-		color: var(--accent);
-	}
-	.log-title {
-		font-weight: 600;
-	}
-	.log-list time {
-		flex-shrink: 0;
-		color: rgb(var(--gray));
-		font-size: 0.9rem;
-	}
+  .logs-header {
+    margin-bottom: 2rem;
+  }
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: rgb(var(--black));
+  }
+  .subtitle {
+    color: rgb(var(--gray));
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .log-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .log-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 1.25rem;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    background: transparent;
+  }
+  .log-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.4);
+    box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.1);
+    transform: translateY(-2px);
+  }
+
+  .log-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .log-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(var(--black));
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+  .log-card:hover .log-title {
+    color: var(--accent);
+  }
+
+  .log-desc {
+    font-size: 0.82rem;
+    color: rgb(var(--gray));
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .log-date {
+    display: inline-flex;
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgb(var(--gray));
+    background: rgb(var(--gray-light));
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 560px) {
+    .log-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

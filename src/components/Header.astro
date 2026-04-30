@@ -1,131 +1,140 @@
 ---
 import { SITE_TITLE } from '../consts';
+
+const currentPath = Astro.url.pathname;
+const navLinks = [
+  { href: '/logs', label: 'logs' },
+  { href: '/uses', label: 'uses' },
+];
 ---
 
 <header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="links">
-			<div class="internal-links">
-				<a href="/logs">logs</a>
-				<a href="/uses">uses</a>
-			</div>
-			<div class="social-links">
-				<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-					<i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
-				</button>
-			</div>
-		</div>
-	</nav>
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="/" class="site-logo">{SITE_TITLE}</a>
+
+    <!-- Nav — always visible on all screen sizes -->
+    <nav class="header-nav" aria-label="Main navigation">
+      {navLinks.map(({ href, label }) => {
+        const isActive = currentPath === href || currentPath.startsWith(href + '/');
+        return (
+          <a
+            href={href}
+            class={isActive ? 'nav-link nav-link--active' : 'nav-link'}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        );
+      })}
+
+      <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
+        <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+    </nav>
+  </div>
 </header>
+
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: var(--header-bg);
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
-
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.75em 0;
-	}
-
-	.links {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		font-weight: bold;
-	}
-
-	.internal-links {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.internal-links a {
-		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
-	}
-
-	.internal-links a:hover {
-		background: rgba(var(--accent-rgb, 0, 0, 0), 0.04);
-	}
-
-	.social-links {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.social-links a {
-		display: flex;
-		align-items: center;
-		line-height: 1;
-		padding: 0.25rem 0.4rem;
-		border-radius: 4px;
-	}
-
-	.social-links a:hover {
-		background: rgba(var(--accent-rgb), 0.04);
-	}
-
-	.theme-toggle {
-		background: none;
-		border: none;
-		cursor: pointer;
-		color: var(--accent);
-		font-size: 1em;
-		padding: 0.25rem 0.4rem;
-		border-radius: 4px;
-		display: flex;
-		align-items: center;
-		line-height: 1;
-	}
-
-	.theme-toggle:hover {
-		background: rgba(var(--accent-rgb), 0.08);
-	}
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    background: var(--header-bg);
+    border-bottom: 1px solid rgb(var(--gray-light));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    height: 3.5rem;
+  }
+  .site-logo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgb(var(--black));
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 0.15s;
+  }
+  .site-logo:hover {
+    color: var(--accent);
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: rgb(var(--gray-dark));
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-link:hover {
+    color: rgb(var(--black));
+    background: rgba(var(--accent-rgb), 0.06);
+  }
+  .nav-link--active {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.1);
+  }
+  .nav-link--active:hover {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.14);
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.25rem;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--accent);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .theme-btn:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+  }
 </style>
 
 <script>
-	const toggle = document.getElementById('theme-toggle');
-	const icon = document.getElementById('theme-icon');
+  function updateIcon(theme: string) {
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+  }
 
-	function updateIcon(theme: string) {
-		if (icon) {
-			icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-		}
-	}
+  updateIcon(document.documentElement.getAttribute('data-theme') ?? 'light');
 
-	// Set icon based on current theme (already applied by BaseHead inline script)
-	updateIcon(document.documentElement.getAttribute('data-theme') ?? 'light');
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') ?? 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateIcon(next);
+  });
 
-	toggle?.addEventListener('click', () => {
-		const current = document.documentElement.getAttribute('data-theme') ?? 'light';
-		const next = current === 'dark' ? 'light' : 'dark';
-		document.documentElement.setAttribute('data-theme', next);
-		localStorage.setItem('theme', next);
-		updateIcon(next);
-	});
-
-	// Sync with system preference changes (only when user hasn't manually set a preference)
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-		if (!localStorage.getItem('theme')) {
-			const theme = e.matches ? 'dark' : 'light';
-			document.documentElement.setAttribute('data-theme', theme);
-			updateIcon(theme);
-		}
-	});
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      const theme = e.matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      updateIcon(theme);
+    }
+  });
 </script>

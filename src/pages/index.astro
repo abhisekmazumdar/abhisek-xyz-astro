@@ -3,99 +3,215 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DrupalCredits from '../components/DrupalCredits.astro';
-import { SITE_TITLE, SITE_DESCRIPTION, DRUPAL_ORG_UID, DRUPAL_CREDITS_OVERRIDE, DRUPAL_CREDITS_PROJECTS, DRUPAL_ORG_CREDITS_URL } from '../consts';
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  DRUPAL_ORG_UID,
+  DRUPAL_CREDITS_OVERRIDE,
+  DRUPAL_CREDITS_PROJECTS,
+  DRUPAL_ORG_CREDITS_URL,
+} from '../consts';
 import { getDrupalCredits } from '../lib/drupal-credits';
 import ProfileImage from '../assets/abhisek.jpg';
 import About from '../content/about.md';
 import { Image } from 'astro:assets';
 
 let { total, projects } = await getDrupalCredits({
-	uid: DRUPAL_ORG_UID,
-	projects: DRUPAL_CREDITS_PROJECTS,
+  uid: DRUPAL_ORG_UID,
+  projects: DRUPAL_CREDITS_PROJECTS,
 });
 const override = DRUPAL_CREDITS_OVERRIDE;
 if (override) {
-	if (override.total !== undefined) total = override.total;
-	projects = projects.map((p) => ({
-		...p,
-		count: override[p.machineName] ?? p.count,
-	}));
+  if (override.total !== undefined) total = override.total;
+  projects = projects.map((p) => ({
+    ...p,
+    count: override[p.machineName] ?? p.count,
+  }));
 }
 const creditsForComponent = projects.map(({ label, count }) => ({ label, count }));
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section class="about">
-				<div class="profile">
-					<Image src={ProfileImage} alt="Abhisek Mazumdar" class="profile-image" sizes="(max-width: 768px) 120px, 150px" loading="eager" fetchpriority="high" />
-					<div class="profile-content">
-						<About />
-						<DrupalCredits totalCount={total} projects={creditsForComponent} creditsUrl={DRUPAL_ORG_CREDITS_URL} />
-					</div>
-				</div>
-			</section>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <div class="home-wrapper">
+        <!-- Left column: photo + identity -->
+        <aside class="home-sidebar">
+          <Image
+            src={ProfileImage}
+            alt="Abhisek Mazumdar"
+            class="profile-img"
+            sizes="(max-width: 720px) 100px, 160px"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <div class="identity">
+            <p class="identity-name">Abhisek Mazumdar</p>
+            <p class="identity-role">Drupal &amp; Mautic Engineer</p>
+            <p class="identity-company">
+              <a href="https://dropsolid.com" target="_blank" rel="noopener noreferrer">Dropsolid</a>
+            </p>
+          </div>
+        </aside>
+
+        <!-- Right column: bio + credits -->
+        <div class="home-body">
+          <div class="bio-content">
+            <About />
+          </div>
+          <DrupalCredits
+            totalCount={total}
+            projects={creditsForComponent}
+            creditsUrl={DRUPAL_ORG_CREDITS_URL}
+          />
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </body>
 </html>
 
-
 <style>
-	.about {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		min-height: 60vh;
-	}
-	.profile {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		max-width: 800px;
-		width: 100%;
-		text-align: center;
-	}
-	.profile-image {
-		width: 150px;
-		height: 150px;
-		border-radius: 50%;
-		object-fit: cover;
-		margin-bottom: 2rem;
-	}
-	.profile-content {
-		width: 100%;
-	}
-	.about p {
-		line-height: 1.8;
-		margin: 0 0 1rem 0;
-		text-align: left;
-	}
-	.links {
-		list-style: none;
-		padding: 0;
-		margin: 1rem 0 0 0;
-		display: grid;
-		gap: 0.5rem;
-	}
-	.links a {
-		text-decoration: none;
-		border-bottom: 2px solid transparent;
-		color: var(--black);
-	}
-	.links a:hover {
-		border-bottom-color: var(--accent);
-	}
-	@media (max-width: 768px) {
-		.profile-image {
-			width: 120px;
-			height: 120px;
-		}
-	}
+  main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4rem 1.25rem 4rem;
+  }
+
+  .home-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 3.5rem;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  /* ── Left column ─────────────────────────── */
+  .home-sidebar {
+    flex-shrink: 0;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: sticky;
+    top: 5.5rem;
+    gap: 1rem;
+  }
+
+  .profile-img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(var(--accent-rgb), 0.25);
+    box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.07);
+  }
+
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .identity-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: rgb(var(--black));
+    margin: 0;
+  }
+  .identity-role {
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    margin: 0;
+  }
+  .identity-company {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+  .identity-company a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .identity-company a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Right column ────────────────────────── */
+  .home-body {
+    flex: 1;
+    min-width: 0;
+    padding-top: 0.5rem;
+  }
+
+  .bio-content :global(p) {
+    line-height: 1.8;
+    margin: 0 0 1rem 0;
+    text-align: left;
+    color: rgb(var(--gray-dark));
+    font-size: 1rem;
+  }
+  .bio-content :global(p:first-child) {
+    font-size: 1.6rem;
+    line-height: 1.35;
+    font-weight: 700;
+    color: rgb(var(--black));
+    margin-bottom: 1.5rem;
+  }
+  .bio-content :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(var(--accent-rgb), 0.3);
+    transition: border-color 0.15s;
+  }
+  .bio-content :global(a:hover) {
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Mobile: stack ───────────────────────── */
+  @media (max-width: 680px) {
+    main {
+      padding: 2.5rem 1rem;
+    }
+
+    .home-wrapper {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .home-sidebar {
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      position: static;
+      gap: 1.25rem;
+    }
+
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+
+    .identity {
+      align-items: flex-start;
+    }
+
+    .home-body {
+      padding-top: 0;
+    }
+
+    .bio-content :global(p:first-child) {
+      font-size: 1.3rem;
+    }
+  }
 </style>

@@ -1,93 +1,140 @@
 ---
 import { SITE_TITLE } from '../consts';
-import MobileNav from './MobileNav';
 
 const currentPath = Astro.url.pathname;
+const navLinks = [
+  { href: '/logs', label: 'logs' },
+  { href: '/uses', label: 'uses' },
+];
 ---
 
-<header class="sticky top-0 z-40 w-full border-b" style="background: var(--header-bg); border-color: rgb(var(--gray-light));">
-  <div class="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4">
+<header>
+  <div class="header-inner">
     <!-- Logo -->
-    <a
-      href="/"
-      class="font-bold text-base no-underline"
-      style="color: rgb(var(--black));"
-    >
-      {SITE_TITLE}
-    </a>
+    <a href="/" class="site-logo">{SITE_TITLE}</a>
 
-    <!-- Desktop nav -->
-    <nav class="hidden md:flex items-center gap-1">
-      {[
-        { href: '/logs', label: 'logs' },
-        { href: '/uses', label: 'uses' },
-      ].map(({ href, label }) => (
-        <a
-          href={href}
-          class={[
-            'px-3 py-1.5 rounded-md text-sm font-medium no-underline transition-colors',
-            currentPath === href || currentPath.startsWith(href + '/')
-              ? 'text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.08)]'
-              : 'text-[rgb(var(--gray-dark))] hover:text-[rgb(var(--black))] hover:bg-[rgb(var(--gray-light),0.5)]',
-          ].join(' ')}
-        >
-          {label}
-        </a>
-      ))}
+    <!-- Nav — always visible on all screen sizes -->
+    <nav class="header-nav" aria-label="Main navigation">
+      {navLinks.map(({ href, label }) => {
+        const isActive = currentPath === href || currentPath.startsWith(href + '/');
+        return (
+          <a
+            href={href}
+            class={isActive ? 'nav-link nav-link--active' : 'nav-link'}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        );
+      })}
 
-      <button
-        id="theme-toggle"
-        class="ml-1 p-2 rounded-md cursor-pointer border-0 bg-transparent transition-colors hover:bg-[rgba(var(--accent-rgb),0.08)]"
-        style="color: var(--accent);"
-        aria-label="Toggle dark mode"
-      >
-        <i id="theme-icon" class="fa-solid fa-moon text-base" aria-hidden="true"></i>
+      <button id="theme-toggle" class="theme-btn" aria-label="Toggle dark mode">
+        <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
       </button>
     </nav>
-
-    <!-- Mobile: theme toggle + hamburger -->
-    <div class="flex md:hidden items-center gap-1">
-      <button
-        id="theme-toggle-mobile"
-        class="p-2 rounded-md cursor-pointer border-0 bg-transparent transition-colors hover:bg-[rgba(var(--accent-rgb),0.08)]"
-        style="color: var(--accent);"
-        aria-label="Toggle dark mode"
-      >
-        <i id="theme-icon-mobile" class="fa-solid fa-moon text-base" aria-hidden="true"></i>
-      </button>
-      <MobileNav currentPath={currentPath} client:only="react" />
-    </div>
   </div>
 </header>
 
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    background: var(--header-bg);
+    border-bottom: 1px solid rgb(var(--gray-light));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    height: 3.5rem;
+  }
+  .site-logo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgb(var(--black));
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 0.15s;
+  }
+  .site-logo:hover {
+    color: var(--accent);
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: rgb(var(--gray-dark));
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-link:hover {
+    color: rgb(var(--black));
+    background: rgba(var(--accent-rgb), 0.06);
+  }
+  .nav-link--active {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.1);
+  }
+  .nav-link--active:hover {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.14);
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 0.25rem;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--accent);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .theme-btn:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+  }
+</style>
+
 <script>
-  function updateIcons(theme: string) {
-    const cls = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    const desktop = document.getElementById('theme-icon');
-    const mobile = document.getElementById('theme-icon-mobile');
-    if (desktop) desktop.className = cls;
-    if (mobile) mobile.className = cls;
+  function updateIcon(theme: string) {
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
   }
 
-  const currentTheme = document.documentElement.getAttribute('data-theme') ?? 'light';
-  updateIcons(currentTheme);
+  updateIcon(document.documentElement.getAttribute('data-theme') ?? 'light');
 
-  function handleToggle() {
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const current = document.documentElement.getAttribute('data-theme') ?? 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    updateIcons(next);
-  }
-
-  document.getElementById('theme-toggle')?.addEventListener('click', handleToggle);
-  document.getElementById('theme-toggle-mobile')?.addEventListener('click', handleToggle);
+    updateIcon(next);
+  });
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.getItem('theme')) {
       const theme = e.matches ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', theme);
-      updateIcons(theme);
+      updateIcon(theme);
     }
   });
 </script>

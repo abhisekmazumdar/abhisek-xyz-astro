@@ -1,6 +1,6 @@
 Hello 👋
 
-My name is Abhisek Mazumdar. I work at [Dropsolid AI](https://dropsolid.ai/) — a sister company of [Dropsolid](https://dropsolid.com) — as a Drupal & Mautic Engineer. I build AI-enabled digital products end to end, using PHP, JavaScript, and WebOps.
+I work at [Dropsolid AI](https://dropsolid.ai/) — a sister company of [Dropsolid](https://dropsolid.com) — as a Drupal & Mautic Engineer. I build AI-enabled digital products end to end, using PHP, JavaScript, and WebOps.
 
 A big part of my work right now is the [Drupal AI](https://www.drupal.org/project/ai) initiative — an open-source project that brings AI capabilities directly into Drupal, one of the most trusted content management platforms used by governments, universities, and enterprises worldwide. I contribute code, serve as one of the Release Managers, and actively track the project's development and issue queue. I work closely with [Marcus Johansson](https://www.drupal.org/u/marcus_johansson) and the broader team. Dropsolid AI is heavily invested in this space and sponsors the majority of my time on it.
 

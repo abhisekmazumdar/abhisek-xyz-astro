@@ -1,104 +1,272 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
 import { getCollection } from 'astro:content';
 
 const logs = (await getCollection('logs')).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+// Group by year, keeping sort order
+const byYear = logs.reduce<Record<number, typeof logs>>((acc, log) => {
+  const y = log.data.pubDate.getFullYear();
+  (acc[y] ??= []).push(log);
+  return acc;
+}, {});
+const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+
+// Total count for entry IDs (newest = highest number)
+const total = logs.length;
+
+function entryId(overallIndex: number) {
+  return String(total - overallIndex).padStart(3, '0');
+}
+
+function fmtDate(d: Date) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }).toUpperCase();
+}
 ---
 
 <DefaultLayout title="Logs" description="Short-form notes, learnings, and updates.">
-  <section>
-    <div class="logs-header">
-      <h1>Logs</h1>
-      <p class="subtitle">Short-form notes, learnings, and updates.</p>
+  <section class="logs-page">
+
+    <!-- Page header -->
+    <div class="logs-head">
+      <div class="logs-head-left">
+        <h1>Logs</h1>
+        <p class="logs-subtitle">Short-form notes, learnings, and updates.</p>
+      </div>
+      <div class="logs-meta">
+        <span class="logs-meta-item">{total} entries</span>
+      </div>
     </div>
 
-    <ul class="log-grid">
-      {logs.map((log) => (
-        <li>
-          <a href={`/logs/${log.id}/`} class="log-card">
-            <div class="log-card-body">
-              <span class="log-title">{log.data.title}</span>
-              {log.data.description && (
-                <span class="log-desc">{log.data.description}</span>
-              )}
+    <!-- Stream -->
+    <div class="log-stream">
+      {(() => {
+        let globalIndex = 0;
+        return years.map((year) => (
+          <div class="year-group">
+            <!-- Year divider -->
+            <div class="year-divider" role="separator">
+              <span class="year-rule" aria-hidden="true"></span>
+              <span class="year-label">{year}</span>
+              <span class="year-rule" aria-hidden="true"></span>
             </div>
-            <span class="log-date">
-              <FormattedDate date={log.data.pubDate} />
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
+
+            <!-- Entries for this year -->
+            {byYear[year].map((log, i) => {
+              const idx = globalIndex++;
+              const isLast = i === byYear[year].length - 1;
+              return (
+                <a
+                  href={`/logs/${log.id}/`}
+                  class="log-entry"
+                  aria-label={`${log.data.title}, ${fmtDate(log.data.pubDate)}`}
+                >
+                  <!-- Timeline track -->
+                  <div class="entry-track" aria-hidden="true">
+                    <div class="entry-dot"></div>
+                    {!isLast && <div class="entry-line"></div>}
+                  </div>
+
+                  <!-- Content -->
+                  <div class="entry-body">
+                    <div class="entry-meta">
+                      <span class="entry-id">#{entryId(idx)}</span>
+                      <span class="entry-date">{fmtDate(log.data.pubDate)}</span>
+                    </div>
+                    <div class="entry-text">
+                      <span class="entry-title">{log.data.title}</span>
+                      {log.data.description && (
+                        <span class="entry-desc">{log.data.description}</span>
+                      )}
+                    </div>
+                    <span class="entry-arrow" aria-hidden="true">→</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        ));
+      })()}
+    </div>
+
   </section>
 </DefaultLayout>
 
 <style>
-  .logs-header {
-    margin-bottom: 2rem;
+  .logs-page {
+    font-size: 1rem;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  .logs-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgb(var(--gray-light));
   }
   h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
     color: rgb(var(--black));
+    margin: 0 0 0.2rem;
   }
-  .subtitle {
+  .logs-subtitle {
+    font-size: 0.875rem;
     color: rgb(var(--gray));
-    font-size: 0.95rem;
     margin: 0;
   }
-
-  .log-grid {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .log-card {
+  .logs-meta {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
     gap: 0.75rem;
-    height: 100%;
-    padding: 1.25rem;
-    border: 1px solid rgb(var(--gray-light));
-    border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .logs-meta-item {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    background: rgb(var(--gray-light));
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── Year group ──────────────────────────── */
+  .year-group {
+    margin-bottom: 0.5rem;
+  }
+  .year-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0.25rem;
+    user-select: none;
+  }
+  .year-rule {
+    flex: 1;
+    height: 1px;
+    background: rgb(var(--gray-light));
+  }
+  .year-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgb(var(--gray));
+    white-space: nowrap;
+  }
+
+  /* ── Log entry ───────────────────────────── */
+  .log-entry {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    background: transparent;
+    position: relative;
   }
-  .log-card:hover {
-    border-color: rgba(var(--accent-rgb), 0.4);
-    box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.1);
-    transform: translateY(-2px);
+  .log-entry:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 8px;
   }
 
-  .log-card-body {
+  /* Timeline column */
+  .entry-track {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    align-items: center;
+    width: 2rem;
+    flex-shrink: 0;
+    padding-top: 1.35rem;
+  }
+  .entry-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgb(var(--gray-light));
+    border: 2px solid rgb(var(--gray));
+    flex-shrink: 0;
+    z-index: 1;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .log-entry:hover .entry-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .entry-line {
     flex: 1;
+    width: 1px;
+    background: rgb(var(--gray-light));
+    margin-top: 4px;
   }
 
-  .log-title {
-    font-size: 1rem;
+  /* Content column */
+  .entry-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 0.75rem 1.25rem;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .log-entry:hover .entry-body {
+    background: rgba(var(--accent-rgb), 0.04);
+  }
+
+  .entry-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    flex-shrink: 0;
+    width: 3.75rem;
+  }
+  .entry-id {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+  }
+  .log-entry:hover .entry-id {
+    opacity: 1;
+  }
+  .entry-date {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    color: rgb(var(--gray));
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .entry-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .entry-title {
+    font-size: 0.975rem;
     font-weight: 600;
     color: rgb(var(--black));
     line-height: 1.4;
     transition: color 0.15s;
   }
-  .log-card:hover .log-title {
+  .log-entry:hover .entry-title {
     color: var(--accent);
   }
-
-  .log-desc {
+  .entry-desc {
     font-size: 0.82rem;
     color: rgb(var(--gray));
     line-height: 1.5;
@@ -108,21 +276,41 @@ const logs = (await getCollection('logs')).sort(
     overflow: hidden;
   }
 
-  .log-date {
-    display: inline-flex;
-    align-self: flex-start;
-    font-size: 0.72rem;
-    font-weight: 500;
+  .entry-arrow {
+    font-size: 0.9rem;
     color: rgb(var(--gray));
-    background: rgb(var(--gray-light));
-    border-radius: 999px;
-    padding: 0.2rem 0.65rem;
-    line-height: 1.5;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.15s, transform 0.15s, color 0.15s;
+    align-self: flex-start;
+    padding-top: 0.1rem;
+  }
+  .log-entry:hover .entry-arrow {
+    opacity: 1;
+    color: var(--accent);
+    transform: translateX(0);
   }
 
+  /* ── Mobile ──────────────────────────────── */
   @media (max-width: 560px) {
-    .log-grid {
-      grid-template-columns: 1fr;
+    .logs-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .entry-body {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .entry-meta {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      width: auto;
+    }
+    .entry-arrow {
+      display: none;
     }
   }
 </style>

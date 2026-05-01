@@ -6,6 +6,8 @@ const socialLinks = [
   { href: 'https://www.instagram.com/abhisek.travel',label: 'Instagram', icon: 'fa-brands fa-instagram' },
   { href: 'https://www.reddit.com/user/abhisekmazumdar', label: 'Reddit', icon: 'fa-brands fa-reddit-alien' },
 ];
+
+const year = new Date().getFullYear();
 ---
 
 <footer>
@@ -17,7 +19,13 @@ const socialLinks = [
         </a>
       ))}
     </div>
-    <p class="footer-label">abhisek.xyz</p>
+
+    <p class="footer-copy">&copy; {year} Abhisek Mazumdar &middot; abhisek.xyz</p>
+
+    <p class="footer-ai">
+      Actively developed &amp; maintained with
+      <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer">Claude Code</a>
+    </p>
   </div>
 </footer>
 
@@ -31,7 +39,7 @@ const socialLinks = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     max-width: 960px;
     margin: 0 auto;
   }
@@ -39,6 +47,7 @@ const socialLinks = [
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    margin-bottom: 0.25rem;
   }
   .social-btn {
     display: inline-flex;
@@ -56,10 +65,24 @@ const socialLinks = [
     color: var(--accent);
     background: rgba(var(--accent-rgb), 0.08);
   }
-  .footer-label {
-    font-size: 0.8rem;
+  .footer-copy {
+    font-size: 0.78rem;
     color: rgb(var(--gray));
     margin: 0;
     letter-spacing: 0.02em;
+  }
+  .footer-ai {
+    font-size: 0.72rem;
+    color: rgb(var(--gray));
+    margin: 0;
+    opacity: 0.7;
+  }
+  .footer-ai a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .footer-ai a:hover {
+    text-decoration: underline;
   }
 </style>

@@ -1,47 +1,77 @@
 ---
 import DefaultLayout from '../../layouts/DefaultLayout.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
-  const logs = await getCollection('logs');
-  return logs.map((log) => ({
+  const logs = (await getCollection('logs')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  const total = logs.length;
+  return logs.map((log, index) => ({
     params: { slug: log.id },
-    props: log,
+    props: {
+      log,
+      entryId: String(total - index).padStart(3, '0'),
+      prevLog: index > 0
+        ? { id: logs[index - 1].id, title: logs[index - 1].data.title, pubDate: logs[index - 1].data.pubDate, entryId: String(total - (index - 1)).padStart(3, '0') }
+        : null,
+      nextLog: index < total - 1
+        ? { id: logs[index + 1].id, title: logs[index + 1].data.title, pubDate: logs[index + 1].data.pubDate, entryId: String(total - (index + 1)).padStart(3, '0') }
+        : null,
+    },
   }));
 }
 
-type Props = CollectionEntry<'logs'>;
+interface Props {
+  log: CollectionEntry<'logs'>;
+  entryId: string;
+  prevLog: { id: string; title: string; pubDate: Date; entryId: string } | null;
+  nextLog: { id: string; title: string; pubDate: Date; entryId: string } | null;
+}
 
-const log = Astro.props;
+const { log, entryId, prevLog, nextLog } = Astro.props;
 const { Content } = await render(log);
+
+function fmtDate(d: Date) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+}
+function fmtDateShort(d: Date) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' }).toUpperCase();
+}
 ---
 
 <DefaultLayout title={log.data.title} description={log.data.description} image={log.data.coverImage}>
   <article class="log-post">
-    <!-- Back link -->
-    <a href="/logs/" class="back-link">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+
+    <!-- Back breadcrumb -->
+    <a href="/logs/" class="breadcrumb">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-        aria-hidden="true" class="back-arrow">
+        aria-hidden="true" class="breadcrumb-arrow">
         <path d="m15 18-6-6 6-6"/>
       </svg>
-      All logs
+      <span class="breadcrumb-path">logs/</span>
     </a>
 
-    <header class="post-header">
-      <div class="meta-row">
-        <span class="date-badge">
-          <FormattedDate date={log.data.pubDate} />
-        </span>
+    <!-- Log file header block -->
+    <header class="log-header">
+      <div class="header-rule"></div>
+
+      <div class="header-meta">
+        <span class="header-id">#{entryId}</span>
+        <span class="header-sep" aria-hidden="true">·</span>
+        <span class="header-date">{fmtDate(log.data.pubDate)}</span>
         {log.data.updatedDate && (
-          <span class="updated-note">
-            Updated <FormattedDate date={log.data.updatedDate} />
-          </span>
+          <>
+            <span class="header-sep" aria-hidden="true">·</span>
+            <span class="header-updated">UPDATED {fmtDateShort(log.data.updatedDate)}</span>
+          </>
         )}
       </div>
+
+      <div class="header-rule"></div>
 
       <h1 class="post-title">{log.data.title}</h1>
 
@@ -50,6 +80,7 @@ const { Content } = await render(log);
       )}
     </header>
 
+    <!-- Hero image -->
     {log.data.coverImage && (
       <div class="hero-wrap">
         <Image
@@ -62,69 +93,124 @@ const { Content } = await render(log);
       </div>
     )}
 
+    <!-- Body content -->
     <div class="log-content">
       <Content />
     </div>
 
+    <!-- Footer navigation -->
     <footer class="post-footer">
-      <a href="/logs/" class="back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-          aria-hidden="true" class="back-arrow">
-          <path d="m15 18-6-6 6-6"/>
-        </svg>
-        All logs
-      </a>
+      <div class="footer-rule"></div>
+      <nav class="log-nav" aria-label="Log entry navigation">
+        <div class="nav-side nav-prev">
+          {prevLog ? (
+            <a href={`/logs/${prevLog.id}/`} class="nav-link nav-link--prev">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              <span class="nav-entry">
+                <span class="nav-id">#{prevLog.entryId} · {fmtDateShort(prevLog.pubDate)}</span>
+                <span class="nav-title">{prevLog.title}</span>
+              </span>
+            </a>
+          ) : (
+            <a href="/logs/" class="nav-link nav-link--prev">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              <span class="nav-entry">
+                <span class="nav-id">logs/</span>
+                <span class="nav-title">Back to all entries</span>
+              </span>
+            </a>
+          )}
+        </div>
+
+        <div class="nav-side nav-next">
+          {nextLog && (
+            <a href={`/logs/${nextLog.id}/`} class="nav-link nav-link--next">
+              <span class="nav-entry">
+                <span class="nav-id">{fmtDateShort(nextLog.pubDate)} · #{nextLog.entryId}</span>
+                <span class="nav-title">{nextLog.title}</span>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </nav>
     </footer>
+
   </article>
 </DefaultLayout>
 
 <style>
-  .back-link {
+  /* ── Breadcrumb ──────────────────────────── */
+  .breadcrumb {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.85rem;
-    font-weight: 500;
+    gap: 0.3rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
     color: rgb(var(--gray));
     text-decoration: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
     transition: color 0.15s;
   }
-  .back-link:hover {
+  .breadcrumb:hover {
     color: var(--accent);
   }
-  .back-arrow {
+  .breadcrumb-arrow {
     transition: transform 0.15s;
   }
-  .back-link:hover .back-arrow {
+  .breadcrumb:hover .breadcrumb-arrow {
     transform: translateX(-2px);
   }
-
-  .post-header {
-    margin-bottom: 2rem;
+  .breadcrumb-path {
+    letter-spacing: 0.04em;
   }
-  .meta-row {
+
+  /* ── Log header block ────────────────────── */
+  .log-header {
+    margin-bottom: 2.5rem;
+  }
+  .header-rule {
+    height: 1px;
+    background: rgb(var(--gray-light));
+    margin: 0.75rem 0;
+  }
+  .header-meta {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    gap: 0.6rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
     flex-wrap: wrap;
   }
-  .date-badge {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.78rem;
-    font-weight: 500;
+  .header-id {
+    font-weight: 700;
     color: var(--accent);
-    background: rgba(var(--accent-rgb), 0.1);
-    border-radius: 999px;
-    padding: 0.2rem 0.75rem;
+    letter-spacing: 0.04em;
   }
-  .updated-note {
-    font-size: 0.78rem;
-    font-style: italic;
+  .header-sep {
+    color: rgb(var(--gray-light));
+  }
+  .header-date {
     color: rgb(var(--gray));
+    letter-spacing: 0.06em;
+  }
+  .header-updated {
+    color: rgb(var(--gray));
+    font-style: italic;
+    letter-spacing: 0.04em;
   }
 
   .post-title {
@@ -132,17 +218,18 @@ const { Content } = await render(log);
     font-weight: 700;
     line-height: 1.25;
     color: rgb(var(--black));
-    margin: 0 0 0.75rem;
+    margin: 1.25rem 0 0.6rem;
   }
   .post-desc {
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: rgb(var(--gray));
-    line-height: 1.6;
+    line-height: 1.65;
     margin: 0;
   }
 
+  /* ── Hero image ──────────────────────────── */
   .hero-wrap {
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     margin-bottom: 2.5rem;
     aspect-ratio: 16 / 9;
@@ -156,36 +243,112 @@ const { Content } = await render(log);
     display: block;
   }
 
+  /* ── Body content ────────────────────────── */
   .log-content {
     line-height: 1.8;
     font-size: 1rem;
   }
-  .log-content :global(p) { margin-bottom: 1.5em; }
+  .log-content :global(p)           { margin-bottom: 1.5em; }
   .log-content :global(h2),
   .log-content :global(h3),
-  .log-content :global(h4) {
-    margin-top: 2em;
-    margin-bottom: 0.75em;
-  }
-  .log-content :global(a) {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .log-content :global(img) {
-    border-radius: 10px;
-    margin: 2em auto;
-    display: block;
-  }
+  .log-content :global(h4)          { margin-top: 2em; margin-bottom: 0.75em; }
+  .log-content :global(a)           { text-decoration: underline; text-underline-offset: 3px; }
+  .log-content :global(img)         { border-radius: 10px; margin: 2em auto; display: block; }
   .log-content :global(ul),
-  .log-content :global(ol) {
-    padding-left: 1.5em;
-    margin-bottom: 1.5em;
-  }
-  .log-content :global(li) { margin-bottom: 0.5em; }
+  .log-content :global(ol)          { padding-left: 1.5em; margin-bottom: 1.5em; }
+  .log-content :global(li)          { margin-bottom: 0.5em; }
 
+  /* ── Footer navigation ───────────────────── */
   .post-footer {
     margin-top: 3.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgb(var(--gray-light));
+  }
+  .footer-rule {
+    height: 1px;
+    background: rgb(var(--gray-light));
+    margin-bottom: 1.25rem;
+  }
+  .log-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-side {
+    flex: 1;
+    min-width: 0;
+  }
+  .nav-next {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    max-width: 100%;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-link:hover {
+    background: rgba(var(--accent-rgb), 0.05);
+  }
+  .nav-link--next {
+    text-align: right;
+  }
+
+  .nav-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .nav-link--next .nav-entry {
+    align-items: flex-end;
+  }
+
+  .nav-id {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .nav-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgb(var(--gray-dark));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .nav-link:hover .nav-title {
+    color: var(--accent);
+  }
+  .nav-link svg {
+    flex-shrink: 0;
+    color: rgb(var(--gray));
+    transition: transform 0.15s, color 0.15s;
+  }
+  .nav-link--prev:hover svg {
+    transform: translateX(-2px);
+    color: var(--accent);
+  }
+  .nav-link--next:hover svg {
+    transform: translateX(2px);
+    color: var(--accent);
+  }
+
+  /* ── Mobile ──────────────────────────────── */
+  @media (max-width: 560px) {
+    .post-title  { font-size: 1.6rem; }
+    .log-nav     { flex-direction: column; gap: 0.5rem; }
+    .nav-next    { justify-content: flex-start; }
+    .nav-link--next .nav-entry { align-items: flex-start; }
+    .nav-title   { white-space: normal; }
   }
 </style>

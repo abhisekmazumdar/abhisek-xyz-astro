@@ -3,16 +3,29 @@ interface ProjectCount {
   label: string;
   count: number;
 }
+interface OrgCredit {
+  name: string;
+  count: number;
+}
 interface Props {
   totalCount: number;
   projects: ProjectCount[];
+  orgs: OrgCredit[];
+  volunteerCount?: number;
   creditsUrl?: string;
 }
 const {
   totalCount,
   projects,
+  orgs,
+  volunteerCount = 0,
   creditsUrl = 'https://www.drupal.org/user/3557964/contribution-records',
 } = Astro.props;
+
+const barTotal = orgs.reduce((s, o) => s + o.count, 0) + volunteerCount;
+
+// Only show org name inside the segment if it's wide enough to read
+const SHOW_NAME_AT = 0.20;
 ---
 
 <div class="credits-card">
@@ -24,13 +37,65 @@ const {
   </div>
 
   {projects.length > 0 && (
-    <div class="credits-pills">
-      {projects.map((p) => (
-        <span class="credits-pill">
-          {p.label}
-          <span class="credits-pill-count">{p.count}</span>
-        </span>
-      ))}
+    <div class="credits-pills-row">
+      <span class="credits-pills-label">A few highlights —</span>
+      <div class="credits-pills">
+        {projects.map((p) => (
+          <span class="credits-pill">
+            {p.label}
+            <span class="credits-pill-count">{p.count}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {orgs.length > 0 && barTotal > 0 && (
+    <div class="credits-org-section">
+      <p class="credits-org-label">
+        Organizations that got credit by sponsoring my work on Drupal.org
+      </p>
+
+      <div class="credits-bar" role="img" aria-label="Credits by sponsoring organization">
+        {orgs.map((org, i) => {
+          const pct = org.count / barTotal;
+          const showName = pct >= SHOW_NAME_AT;
+          return (
+            <div
+              class={`credits-seg seg-${Math.min(i, 4)}`}
+              style={`flex: ${org.count}`}
+              title={`${org.name}: ${org.count} credits`}
+            >
+              {showName && <span class="seg-name">{org.name}</span>}
+              <span class="seg-count">{org.count}</span>
+            </div>
+          );
+        })}
+        {volunteerCount > 0 && (
+          <div
+            class="credits-seg seg-vol"
+            style={`flex: ${volunteerCount}`}
+            title={`Personal / volunteer: ${volunteerCount} credits`}
+          />
+        )}
+      </div>
+
+      <ul class="credits-legend" role="list">
+        {orgs.map((org, i) => (
+          <li class="legend-item">
+            <span class={`legend-dot dot-${Math.min(i, 4)}`} aria-hidden="true" />
+            <span class="legend-name">{org.name}</span>
+            <span class="legend-count">{org.count}</span>
+          </li>
+        ))}
+        {volunteerCount > 0 && (
+          <li class="legend-item">
+            <span class="legend-dot dot-vol" aria-hidden="true" />
+            <span class="legend-name">Personal</span>
+            <span class="legend-count">{volunteerCount}</span>
+          </li>
+        )}
+      </ul>
     </div>
   )}
 
@@ -52,6 +117,7 @@ const {
     background: rgba(var(--accent-rgb), 0.03);
     border-left: 3px solid rgba(var(--accent-rgb), 0.35);
   }
+
   .credits-eyebrow {
     font-size: 0.7rem;
     font-weight: 600;
@@ -60,43 +126,174 @@ const {
     color: rgb(var(--gray));
     margin: 0 0 0.75rem;
   }
+
+  /* ── Total ───────────────────────────────── */
   .credits-total-row {
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
-    margin-bottom: 0.875rem;
+    margin-bottom: 0.9rem;
   }
+
   .credits-count {
     font-size: 2.25rem;
     font-weight: 700;
     line-height: 1;
     color: var(--accent);
   }
+
   .credits-count-label {
     font-size: 0.875rem;
     color: rgb(var(--gray-dark));
   }
+
+  /* ── Project pills ───────────────────────── */
+  .credits-pills-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .credits-pills-label {
+    font-size: 0.72rem;
+    color: rgb(var(--gray));
+    white-space: nowrap;
+  }
+
   .credits-pills {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.4rem;
   }
+
   .credits-pill {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     font-size: 0.78rem;
-    padding: 0.25rem 0.65rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
     border: 1px solid rgb(var(--gray-light));
     background: rgb(var(--gray-light));
     color: rgb(var(--gray-dark));
   }
+
   .credits-pill-count {
     font-weight: 700;
     color: var(--accent);
   }
+
+  /* ── Org section ─────────────────────────── */
+  .credits-org-section {
+    margin-bottom: 1.1rem;
+  }
+
+  .credits-org-label {
+    font-size: 0.82rem;
+    color: rgb(var(--gray-dark));
+    margin: 0 0 0.65rem;
+    line-height: 1.4;
+  }
+
+  .credits-org-label strong {
+    color: rgb(var(--black));
+    font-weight: 700;
+  }
+
+  /* ── Stacked bar ─────────────────────────── */
+  .credits-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 2px;
+    background: rgb(var(--gray-light));
+    margin-bottom: 0.7rem;
+  }
+
+  .credits-seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    gap: 1px;
+    padding: 0 6px;
+    min-width: 0;
+  }
+
+  .seg-0 { background: rgba(var(--accent-rgb), 0.88); }
+  .seg-1 { background: rgba(var(--accent-rgb), 0.68); }
+  .seg-2 { background: rgba(var(--accent-rgb), 0.50); }
+  .seg-3 { background: rgba(var(--accent-rgb), 0.34); }
+  .seg-4 { background: rgba(var(--accent-rgb), 0.22); }
+  .seg-vol { background: rgba(var(--accent-rgb), 0.12); }
+
+  .seg-name {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    line-height: 1;
+    opacity: 0.85;
+  }
+
+  .seg-count {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  /* ── Legend ──────────────────────────────── */
+  .credits-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-0 { background: rgba(var(--accent-rgb), 0.88); }
+  .dot-1 { background: rgba(var(--accent-rgb), 0.68); }
+  .dot-2 { background: rgba(var(--accent-rgb), 0.50); }
+  .dot-3 { background: rgba(var(--accent-rgb), 0.34); }
+  .dot-4 { background: rgba(var(--accent-rgb), 0.22); }
+  .dot-vol { background: rgba(var(--accent-rgb), 0.12); }
+
+  .legend-name {
+    font-size: 0.75rem;
+    color: rgb(var(--gray-dark));
+  }
+
+  .legend-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── Link ────────────────────────────────── */
   .credits-link {
     display: inline-flex;
     align-items: center;
@@ -107,8 +304,38 @@ const {
     text-decoration: none;
     transition: opacity 0.15s;
   }
+
   .credits-link:hover {
     opacity: 0.75;
     text-decoration: none;
+  }
+
+  @media (max-width: 500px) {
+    .credits-card {
+      padding: 1rem 1.1rem;
+    }
+
+    .credits-count {
+      font-size: 1.9rem;
+    }
+
+    /* Hide org names inside bar segments — legend below handles labelling */
+    .seg-name {
+      display: none;
+    }
+
+    .credits-bar {
+      height: 34px;
+    }
+
+    .credits-pills-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    .credits-legend {
+      gap: 0.35rem 0.75rem;
+    }
   }
 </style>

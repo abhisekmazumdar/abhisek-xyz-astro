@@ -26,3 +26,11 @@ export const DRUPAL_CREDITS_PROJECTS: { label: string; machineName: string }[] =
 export const DRUPAL_CREDITS_OVERRIDE:
 	| { total?: number; [machineName: string]: number | undefined }
 	| undefined = undefined;
+
+/**
+ * Optional override for org credits when the API is down or for testing.
+ * Provide orgs in descending order by count.
+ */
+export const DRUPAL_ORG_CREDITS_OVERRIDE:
+	| { orgs: { name: string; count: number }[]; volunteerCount: number }
+	| undefined = undefined;

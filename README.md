@@ -1,68 +1,75 @@
-# Astro Starter Kit: Blog
+# abhisek.xyz
 
-```sh
-npm create astro@latest -- --template blog
-```
+Personal portfolio and blog for [Abhisek Mazumdar](https://www.abhisek.xyz) — Drupal & Mautic Engineer, open-source contributor, and active Drupal community member.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+## Stack
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- [Astro](https://astro.build/) — static site generator
+- [React](https://react.dev/) — interactive components via `@astrojs/react`
+- [Tailwind CSS v4](https://tailwindcss.com/) — utility CSS via Vite plugin
+- TypeScript
+- Font Awesome 6 (CDN, icon set for social links)
 
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project structure
 
 ```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+src/
+├── assets/          # Static images (profile photo, etc.)
+├── components/      # Astro components (Header, Footer, DrupalCredits, ...)
+├── content/
+│   ├── about.md     # Homepage bio — edit this to update the intro text
+│   └── logs/        # Blog posts (Markdown / MDX)
+├── layouts/         # Page shell layouts
+├── lib/
+│   ├── drupal-credits.ts      # Fetches per-project credit counts from Drupal.org
+│   └── drupal-org-credits.ts  # Fetches org-sponsored credit breakdown from Drupal.org
+├── pages/
+│   ├── index.astro  # Homepage
+│   └── logs/        # Blog index + post routes
+├── styles/          # Global CSS
+└── consts.ts        # Site-wide config — start here
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Configuration
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+All site-specific values live in `src/consts.ts`:
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+| Constant | Purpose |
+|---|---|
+| `DRUPAL_ORG_UID` | Your Drupal.org numeric user ID |
+| `DRUPAL_CREDITS_PROJECTS` | Projects to highlight in the credits card (label + machine name) |
+| `DRUPAL_CREDITS_OVERRIDE` | Override total or per-project counts (useful when the API is slow or down) |
+| `DRUPAL_ORG_CREDITS_OVERRIDE` | Override the full org breakdown (same use case) |
+| `DRUPAL_ORG_CREDITS_URL` | Link target for "View all on Drupal.org" |
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Drupal.org credits — how it works
 
-## 🧞 Commands
+At build time, two library functions hit the Drupal.org JSON:API:
 
-All commands are run from the root of the project, from a terminal:
+- `getDrupalCredits` — paginates `/jsonapi/views/contribution_records/by_user` to count credits per project
+- `getDrupalOrgCredits` — fetches the same endpoint with relationship includes to determine which organizations sponsored each credit, then aggregates by org name
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Both use exponential backoff (up to 4 retries) to handle transient 503/429 responses from the API.
 
-## 👀 Want to learn more?
+The results are passed to `<DrupalCredits>` on the homepage, which renders:
+- total credit count
+- highlighted project pills (configurable in `consts.ts`)
+- a proportional stacked bar showing credits by sponsoring org
+- a color-coded legend
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Use the `*_OVERRIDE` constants to hard-code values if you want to skip the API calls during development or if the API is unreliable at deploy time.
 
-## Credit
+## Commands
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+| Command | Action |
+|---|---|
+| `npm install` | Install dependencies |
+| `npm run dev` | Start dev server at `localhost:4321` |
+| `npm run build` | Build to `./dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run astro check` | Type-check `.astro` files |
+
+## Content
+
+- **Bio:** edit `src/content/about.md`
+- **Blog posts:** add `.md` or `.mdx` files to `src/content/logs/`; frontmatter schema is defined in `src/content.config.ts`

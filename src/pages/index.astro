@@ -58,22 +58,15 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
             <p class="identity-company">
               <a href="https://dropsolid.ai/" target="_blank" rel="noopener noreferrer">Dropsolid AI</a>
             </p>
-            <a
-              href="https://www.linkedin.com/in/abhisekmazumdar/"
-              class="sidebar-linkedin"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn profile"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              LinkedIn
-            </a>
-            <div class="sidebar-credits-stat">
-              <span class="sidebar-credits-num">{total}</span>
-              <span class="sidebar-credits-lbl">Drupal.org credits</span>
+            <div class="sidebar-social">
+              <a href="https://drupal.org/u/abhisekmazumdar"        class="sidebar-social-btn" target="_blank" rel="noopener noreferrer" aria-label="Drupal" title="Drupal"><i class="fa-brands fa-drupal" aria-hidden="true"></i></a>
+              <a href="https://github.com/abhisekmazumdar"          class="sidebar-social-btn" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+              <a href="https://www.instagram.com/abhisek.travel"    class="sidebar-social-btn" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+              <a href="https://www.reddit.com/user/abhisekmazumdar" class="sidebar-social-btn" target="_blank" rel="noopener noreferrer" aria-label="Reddit" title="Reddit"><i class="fa-brands fa-reddit-alien" aria-hidden="true"></i></a>
             </div>
+            <a href="https://linkedin.com/in/abhisekmazumdar" class="sidebar-linkedin-btn" target="_blank" rel="noopener noreferrer">
+              Connect on LinkedIn
+            </a>
           </div>
         </aside>
 
@@ -81,19 +74,6 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
         <div class="home-body">
           <div class="bio-content">
             <About />
-          </div>
-          <div class="contact-cta">
-            <a
-              href="https://www.linkedin.com/in/abhisekmazumdar/"
-              class="contact-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              Connect on LinkedIn
-            </a>
           </div>
           <DrupalCredits
             totalCount={total}
@@ -136,12 +116,12 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
     text-align: center;
     position: sticky;
     top: 5.5rem;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .profile-img {
-    width: 160px;
-    height: 160px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid rgba(var(--accent-rgb), 0.25);
@@ -151,7 +131,8 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
   .identity {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    align-items: center;
+    gap: 0.15rem;
   }
 
   .identity-name {
@@ -161,12 +142,12 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
     margin: 0;
   }
   .identity-role {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: rgb(var(--gray));
     margin: 0;
   }
   .identity-company {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     margin: 0;
   }
   .identity-company a {
@@ -178,43 +159,48 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
     text-decoration: underline;
   }
 
-  .sidebar-linkedin {
+  .sidebar-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    margin-top: 0.3rem;
+  }
+
+  .sidebar-social-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-    font-size: 0.72rem;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 7px;
+    text-decoration: none;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+    transition: color 0.15s, background 0.15s;
+  }
+  .sidebar-social-btn:hover {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.08);
+  }
+
+  .sidebar-linkedin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--accent);
     text-decoration: none;
-    opacity: 0.85;
-    transition: opacity 0.15s;
+    padding: 0.35rem 0.85rem;
+    border: 1.5px solid rgba(var(--accent-rgb), 0.45);
+    border-radius: 999px;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
   }
-  .sidebar-linkedin:hover {
-    opacity: 1;
-  }
-
-  .sidebar-credits-stat {
-    margin-top: 0.65rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    padding-top: 0.65rem;
-    border-top: 1px solid rgb(var(--gray-light));
-    width: 100%;
-  }
-  .sidebar-credits-num {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .sidebar-credits-lbl {
-    font-size: 0.62rem;
-    color: rgb(var(--gray));
-    text-align: center;
-    line-height: 1.3;
+  .sidebar-linkedin-btn:hover {
+    background: rgba(var(--accent-rgb), 0.08);
+    border-color: var(--accent);
   }
 
   /* ── Right column ────────────────────────── */
@@ -301,12 +287,8 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
       align-items: flex-start;
     }
 
-    .sidebar-credits-stat {
-      display: none;
-    }
-
-    .sidebar-linkedin {
-      margin-top: 0.25rem;
+    .sidebar-social {
+      margin-top: 0.15rem;
     }
 
     .home-body {

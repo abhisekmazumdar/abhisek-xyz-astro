@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # claude local setting
 .claude/settings.local.json
+
+# build-time API cache
+.cache/

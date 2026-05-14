@@ -1,7 +1,15 @@
 /**
  * Fetches Drupal.org contribution records and aggregates credits by sponsoring
- * organization for a given user. Paginates the full history at build time.
+ * organization for a given user.
+ *
+ * Page 0 is fetched first to discover the total record count, then all
+ * remaining pages are fetched in parallel. Results are cached to
+ * .cache/drupal-org-credits.json for CACHE_TTL_MS to avoid redundant API
+ * calls during development.
  */
+
+import fs from 'node:fs';
+import path from 'node:path';
 
 const JSONAPI_BASE =
 	'https://www.drupal.org/jsonapi/views/contribution_records/by_user';
@@ -9,6 +17,8 @@ const JSONAPI_BASE =
 const PAGE_SIZE = 50;
 const MAX_RETRIES = 4;
 const BASE_DELAY_MS = 1500;
+const CACHE_TTL_MS = 4 * 60 * 60 * 1000; // 4 hours
+const CACHE_FILE = path.resolve('.cache/drupal-org-credits.json');
 
 export interface OrgCredit {
 	name: string;
@@ -54,8 +64,7 @@ async function fetchPage(
 
 		if (res.status === 503 || res.status === 429) {
 			if (attempt < MAX_RETRIES) {
-				const delay = BASE_DELAY_MS * 2 ** attempt;
-				await sleep(delay);
+				await sleep(BASE_DELAY_MS * 2 ** attempt);
 				return fetchPage(uid, page, timeoutMs, attempt + 1);
 			}
 			return null;
@@ -69,8 +78,7 @@ async function fetchPage(
 		return await res.json();
 	} catch {
 		if (attempt < MAX_RETRIES) {
-			const delay = BASE_DELAY_MS * 2 ** attempt;
-			await sleep(delay);
+			await sleep(BASE_DELAY_MS * 2 ** attempt);
 			return fetchPage(uid, page, timeoutMs, attempt + 1);
 		}
 		return null;
@@ -79,29 +87,21 @@ async function fetchPage(
 	}
 }
 
-/**
- * Fetches all contribution records for a user and returns credit counts grouped
- * by the sponsoring organization. Runs at build time only.
- */
-export async function getDrupalOrgCredits(
-	options: GetDrupalOrgCreditsOptions
-): Promise<DrupalOrgCreditsResult> {
-	const { uid, timeoutMs = 30000 } = options;
-
+function processPages(
+	uid: number,
+	pages: unknown[]
+): DrupalOrgCreditsResult {
 	const orgTotals = new Map<string, number>();
 	let volunteerCount = 0;
-	let page = 0;
 
-	while (true) {
-		const data = await fetchPage(uid, page, timeoutMs);
-
-		if (data == null || typeof data !== 'object') break;
+	for (const data of pages) {
+		if (data == null || typeof data !== 'object') continue;
 
 		const obj = data as Record<string, unknown>;
 		const records = Array.isArray(obj.data) ? obj.data : [];
 		const included = Array.isArray(obj.included) ? obj.included : [];
 
-		if (records.length === 0) break;
+		if (records.length === 0) continue;
 
 		// Build org lookup from included resources
 		const orgs = new Map<string, string>();
@@ -149,14 +149,78 @@ export async function getDrupalOrgCredits(
 				orgTotals.set(orgName, (orgTotals.get(orgName) ?? 0) + 1);
 			}
 		}
-
-		if (records.length < PAGE_SIZE) break;
-		page++;
 	}
 
-	const orgs: OrgCredit[] = Array.from(orgTotals.entries())
+	const orgList: OrgCredit[] = Array.from(orgTotals.entries())
 		.map(([name, count]) => ({ name, count }))
 		.sort((a, b) => b.count - a.count);
 
-	return { orgs, volunteerCount };
+	return { orgs: orgList, volunteerCount };
+}
+
+function readCache(): (DrupalOrgCreditsResult & { cachedAt: number }) | null {
+	try {
+		const raw = fs.readFileSync(CACHE_FILE, 'utf-8');
+		const parsed = JSON.parse(raw) as DrupalOrgCreditsResult & { cachedAt: number };
+		if (Date.now() - parsed.cachedAt < CACHE_TTL_MS) return parsed;
+	} catch {
+		// cache miss
+	}
+	return null;
+}
+
+function writeCache(result: DrupalOrgCreditsResult): void {
+	try {
+		fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
+		fs.writeFileSync(CACHE_FILE, JSON.stringify({ ...result, cachedAt: Date.now() }));
+	} catch {
+		// non-fatal
+	}
+}
+
+/**
+ * Fetches all contribution records for a user and returns credit counts grouped
+ * by the sponsoring organization. Runs at build time only.
+ *
+ * Fetches page 0 first to determine total pages, then fires remaining pages
+ * in parallel. Results are cached locally for CACHE_TTL_MS (4 h).
+ */
+export async function getDrupalOrgCredits(
+	options: GetDrupalOrgCreditsOptions
+): Promise<DrupalOrgCreditsResult> {
+	const { uid, timeoutMs = 30000 } = options;
+
+	const cached = readCache();
+	if (cached) return { orgs: cached.orgs, volunteerCount: cached.volunteerCount };
+
+	// Fetch first page to learn total record count
+	const firstPage = await fetchPage(uid, 0, timeoutMs);
+	if (firstPage == null || typeof firstPage !== 'object') {
+		return { orgs: [], volunteerCount: 0 };
+	}
+
+	const obj = firstPage as Record<string, unknown>;
+	const meta = (obj.meta ?? {}) as Record<string, unknown>;
+	const totalCount =
+		typeof meta.count === 'number'
+			? meta.count
+			: typeof meta.count === 'string'
+				? parseInt(meta.count, 10)
+				: ((obj.data as unknown[]) ?? []).length;
+
+	const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+	// Fetch remaining pages in parallel
+	const remainingPages =
+		totalPages > 1
+			? await Promise.all(
+					Array.from({ length: totalPages - 1 }, (_, i) =>
+						fetchPage(uid, i + 1, timeoutMs)
+					)
+				)
+			: [];
+
+	const result = processPages(uid, [firstPage, ...remainingPages]);
+	writeCache(result);
+	return result;
 }

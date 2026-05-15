@@ -38,6 +38,8 @@
   --accent: #7c3aed;
   --accent-dark: #5b21b6;
   --accent-rgb: 124, 58, 237;
+  --accent-cool-rgb: 99, 102, 241;  /* indigo, secondary glow */
+  --accent-warm-rgb: 251, 191, 173; /* peach, warm wash */
 
   /* Grays (warm purple-tinted) */
   --black: 26, 21, 35;
@@ -79,6 +81,7 @@
   --accent: #a78bfa;
   --accent-dark: #7c3aed;
   --accent-rgb: 167, 139, 250;
+  --accent-cool-rgb: 129, 140, 248; /* indigo-ish for ambient gradient */
 
   /* Grays (cool purple-dark) */
   --black: 245, 242, 255;
@@ -87,11 +90,15 @@
   --gray-dark: 210, 202, 235;
 
   /* Surfaces */
-  --body-bg: #0c0a14;
+  --body-bg: #07060d;
+  --surface-1: rgba(20, 16, 36, 0.55);
+  --surface-2: rgba(28, 22, 48, 0.7);
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-hairline: rgba(255, 255, 255, 0.08);
   --box-shadow:
     0 2px 8px rgba(0, 0, 0, 60%), 0 8px 24px rgba(0, 0, 0, 70%),
     0 16px 32px rgba(0, 0, 0, 70%);
-  --header-bg: #130f20;
+  --header-bg: rgba(11, 8, 22, 0.55);
   color-scheme: dark;
 
   /* shadcn / Tailwind variables (dark) */
@@ -138,17 +145,12 @@ body {
   height: 100%;
 }
 body {
+  position: relative;
   font-family: 'Atkinson', sans-serif;
   margin: 0;
   padding: 0;
   text-align: left;
   background-color: var(--body-bg);
-  background-image: radial-gradient(
-    ellipse 160% 55% at 50% -5%,
-    rgba(var(--gray-light), 0.65) 0%,
-    transparent 70%
-  );
-  background-repeat: no-repeat;
   overflow-wrap: break-word;
   color: rgb(var(--gray-dark));
   font-size: 20px;
@@ -157,13 +159,88 @@ body {
   display: flex;
   flex-direction: column;
 }
-[data-theme="dark"] body {
-  background-color: #0c0a14;
-  background-image: radial-gradient(
-    ellipse 160% 55% at 50% -5%,
-    rgba(var(--gray-light), 0.55) 0%,
-    transparent 70%
-  );
+
+/* Ambient gradient layer — fixed to viewport, drifts subtly with scroll
+   via --bg-shift-y (set by inline script in BaseHead). */
+body::before {
+  content: "";
+  position: fixed;
+  top: -120px;
+  left: 0;
+  right: 0;
+  bottom: -120px;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  transform: translate3d(0, var(--bg-shift-y, 0), 0);
+  will-change: transform;
+  background-image:
+    /* violet aurora, top of page */
+    radial-gradient(
+      ellipse 75% 50% at 30% 8%,
+      rgba(var(--accent-rgb), 0.16) 0%,
+      rgba(var(--accent-rgb), 0.04) 35%,
+      transparent 65%
+    ),
+    /* warm peach wash, bottom-right */
+    radial-gradient(
+      ellipse 60% 50% at 110% 90%,
+      rgba(var(--accent-warm-rgb), 0.35) 0%,
+      transparent 60%
+    ),
+    /* subtle indigo lift, mid-left */
+    radial-gradient(
+      ellipse 50% 40% at -10% 50%,
+      rgba(var(--accent-cool-rgb), 0.10) 0%,
+      transparent 60%
+    );
+}
+
+[data-theme="dark"] body::before {
+  background-image:
+    /* warm violet glow, top */
+    radial-gradient(
+      ellipse 70% 50% at 30% 8%,
+      rgba(var(--accent-rgb), 0.28) 0%,
+      rgba(var(--accent-rgb), 0.08) 35%,
+      transparent 65%
+    ),
+    /* cooler indigo wash, bottom-right */
+    radial-gradient(
+      ellipse 60% 50% at 110% 90%,
+      rgba(var(--accent-cool-rgb), 0.18) 0%,
+      transparent 60%
+    ),
+    /* deep base wash to lift pure black */
+    radial-gradient(
+      ellipse 100% 80% at 50% 50%,
+      rgba(28, 20, 50, 0.45) 0%,
+      transparent 80%
+    );
+}
+
+/* Subtle grain to kill banding on large flat dark gradients */
+[data-theme="dark"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    transform: none;
+    will-change: auto;
+  }
 }
 main {
   flex: 1;
@@ -197,6 +274,10 @@ code {
   padding: 2px 5px;
   background-color: rgb(var(--gray-light));
   border-radius: 2px;
+}
+[data-theme="dark"] code {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 pre { padding: 1.5em; border-radius: 8px; }
 pre > code { all: unset; }

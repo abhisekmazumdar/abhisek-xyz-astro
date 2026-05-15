@@ -30,6 +30,32 @@ const { title, description, image = FallbackImage } = Astro.props;
 	})();
 </script>
 
+<!-- Scroll-driven ambient gradient parallax -->
+<script is:inline>
+	(function () {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		var ticking = false;
+		var root = document.documentElement;
+		function update() {
+			var y = window.scrollY || window.pageYOffset || 0;
+			// Subtle drift — bg moves in scroll direction at ~8% speed, capped.
+			var shift = -Math.min(y * 0.08, 80);
+			root.style.setProperty('--bg-shift-y', shift + 'px');
+			ticking = false;
+		}
+		window.addEventListener(
+			'scroll',
+			function () {
+				if (!ticking) {
+					requestAnimationFrame(update);
+					ticking = true;
+				}
+			},
+			{ passive: true }
+		);
+	})();
+</script>
+
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />

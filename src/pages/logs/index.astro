@@ -135,6 +135,10 @@ function fmtDate(d: Date) {
     border-radius: 4px;
     white-space: nowrap;
   }
+  :global([data-theme="dark"]) .logs-meta-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
 
   /* ── Year group ──────────────────────────── */
   .year-group {
@@ -219,7 +223,11 @@ function fmtDate(d: Date) {
     transition: background 0.15s;
   }
   .log-entry:hover .entry-body {
-    background: rgba(var(--accent-rgb), 0.04);
+    background: rgba(var(--accent-rgb), 0.05);
+  }
+  :global([data-theme="dark"]) .log-entry:hover .entry-body {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
   }
 
   .entry-meta {

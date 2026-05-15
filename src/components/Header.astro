@@ -41,10 +41,43 @@ const navLinks = [
     top: 0;
     z-index: 40;
     width: 100%;
-    background: var(--header-bg);
-    border-bottom: 1px solid rgb(var(--gray-light));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.65);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(124, 58, 237, 0.25) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  :global([data-theme="dark"]) header {
+    background: rgba(11, 8, 22, 0.55);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  }
+  :global([data-theme="dark"]) header::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(167, 139, 250, 0.3) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
   .header-inner {
     display: flex;

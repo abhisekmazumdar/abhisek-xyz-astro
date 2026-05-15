@@ -127,6 +127,12 @@ const orgCredits = DRUPAL_ORG_CREDITS_OVERRIDE ?? await getDrupalOrgCredits({ ui
     border: 3px solid rgba(var(--accent-rgb), 0.25);
     box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.07);
   }
+  :global([data-theme="dark"]) .profile-img {
+    border-color: rgba(var(--accent-rgb), 0.4);
+    box-shadow:
+      0 0 0 6px rgba(var(--accent-rgb), 0.08),
+      0 0 60px rgba(var(--accent-rgb), 0.18);
+  }
 
   .identity {
     display: flex;

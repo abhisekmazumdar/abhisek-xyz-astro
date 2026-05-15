@@ -110,12 +110,80 @@ const SHOW_NAME_AT = 0.20;
 
 <style>
   .credits-card {
+    position: relative;
     margin-top: 1.75rem;
     padding: 1.25rem 1.5rem;
-    border: 1px solid rgb(var(--gray-light));
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-left: 3px solid rgba(var(--accent-rgb), 0.45);
     border-radius: 12px;
-    background: rgba(var(--accent-rgb), 0.03);
-    border-left: 3px solid rgba(var(--accent-rgb), 0.35);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.75) 0%,
+        rgba(255, 255, 255, 0.55) 100%
+      );
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 8px 28px rgba(60, 50, 80, 0.08),
+      0 2px 6px rgba(60, 50, 80, 0.04);
+  }
+  .credits-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 13px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.25) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(251, 191, 173, 0.4) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  :global([data-theme="dark"]) .credits-card {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-left: 3px solid rgba(167, 139, 250, 0.55);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(167, 139, 250, 0.07) 0%,
+        rgba(167, 139, 250, 0.02) 100%
+      ),
+      rgba(20, 16, 36, 0.5);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 12px 40px rgba(0, 0, 0, 0.35);
+  }
+  :global([data-theme="dark"]) .credits-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 13px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(167, 139, 250, 0.35) 0%,
+      transparent 35%,
+      transparent 65%,
+      rgba(99, 102, 241, 0.18) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
   .credits-eyebrow {
@@ -179,6 +247,10 @@ const SHOW_NAME_AT = 0.20;
     background: rgb(var(--gray-light));
     color: rgb(var(--gray-dark));
   }
+  :global([data-theme="dark"]) .credits-pill {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+  }
 
   .credits-pill-count {
     font-weight: 700;
@@ -211,6 +283,9 @@ const SHOW_NAME_AT = 0.20;
     gap: 2px;
     background: rgb(var(--gray-light));
     margin-bottom: 0.7rem;
+  }
+  :global([data-theme="dark"]) .credits-bar {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .credits-seg {

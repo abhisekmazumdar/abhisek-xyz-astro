@@ -3,6 +3,7 @@ title: "How I've Adapted to the AI Evolution of Drupal Open Source Contribution"
 description: "How I use a Drupal issue agent and a set of skills as an assistant for my open source contributions."
 pubDate: 2026-05-31
 coverImage: ../../assets/logs/adapting-to-ai-in-drupal-open-source-contribution.jpeg
+coverImageCaption: Maldives 2026
 ---
 
 These days a good chunk of my time goes into open source contributions, mostly reviewing and working on issues in the [Drupal AI](https://www.drupal.org/project/ai) ecosystem and a few other contrib modules that work with it. I work at [Dropsolid AI](https://dropsolid.ai), and my Drupal AI contribution work is sponsored by them. Big shout out to them for backing this.

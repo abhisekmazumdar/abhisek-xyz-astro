@@ -23,6 +23,7 @@ const logs = defineCollection({
 		pubDate: z.coerce.date(),
 		updatedDate: z.coerce.date().optional(),
 		coverImage: image().optional(),
+		coverImageCaption: z.string().optional(),
 	}),
 });
 

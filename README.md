@@ -73,3 +73,24 @@ Use the `*_OVERRIDE` constants to hard-code values if you want to skip the API c
 
 - **Bio:** edit `src/content/about.md`
 - **Blog posts:** add `.md` or `.mdx` files to `src/content/logs/`; frontmatter schema is defined in `src/content.config.ts`
+
+### Log post frontmatter
+
+| Field | Required | Description |
+|---|---|---|
+| `title` | yes | Post title |
+| `description` | yes | Short summary (shown on index and as meta description) |
+| `pubDate` | yes | Publication date |
+| `updatedDate` | no | Last updated date |
+| `coverImage` | no | Hero image (path relative to the `.md` file, e.g. `../../assets/logs/my-image.jpg`) |
+| `coverImageCaption` | no | Caption rendered below the hero image |
+
+### Images with captions inside post body
+
+Use standard Markdown image syntax with a title string — the title becomes the caption:
+
+```markdown
+![Alt text](../../assets/logs/my-image.jpg "Caption text here")
+```
+
+Images without a title render as before (no caption).

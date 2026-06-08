@@ -82,7 +82,7 @@ function fmtDateShort(d: Date) {
 
     <!-- Hero image -->
     {log.data.coverImage && (
-      <div class="hero-wrap">
+      <figure class="hero-wrap">
         <Image
           src={log.data.coverImage}
           alt={log.data.title}
@@ -90,7 +90,10 @@ function fmtDateShort(d: Date) {
           height={630}
           class="hero-img"
         />
-      </div>
+        {log.data.coverImageCaption && (
+          <figcaption class="hero-caption">{log.data.coverImageCaption}</figcaption>
+        )}
+      </figure>
     )}
 
     <!-- Body content -->
@@ -230,17 +233,25 @@ function fmtDateShort(d: Date) {
   /* ── Hero image ──────────────────────────── */
   .hero-wrap {
     border-radius: 10px;
-    overflow: hidden;
+    overflow: visible;
     margin-bottom: 2.5rem;
-    aspect-ratio: 16 / 9;
   }
-  .hero-img {
+  .hero-wrap img.hero-img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-radius: 0;
+    border-radius: 10px;
     margin: 0;
     display: block;
+  }
+  .hero-caption {
+    margin-top: 0.6em;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    letter-spacing: 0.02em;
+    font-style: italic;
   }
 
   /* ── Body content ────────────────────────── */
@@ -254,6 +265,21 @@ function fmtDateShort(d: Date) {
   .log-content :global(h4)          { margin-top: 2em; margin-bottom: 0.75em; }
   .log-content :global(a)           { text-decoration: underline; text-underline-offset: 3px; }
   .log-content :global(img)         { border-radius: 10px; margin: 2em auto; display: block; }
+  .log-content :global(figure.post-figure) {
+    margin: 2em 0;
+    text-align: center;
+  }
+  .log-content :global(figure.post-figure img) {
+    margin: 0 auto;
+  }
+  .log-content :global(figcaption) {
+    margin-top: 0.6em;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    letter-spacing: 0.02em;
+    font-style: italic;
+  }
   .log-content :global(ul),
   .log-content :global(ol)          { padding-left: 1.5em; margin-bottom: 1.5em; }
   .log-content :global(li)          { margin-bottom: 0.5em; }

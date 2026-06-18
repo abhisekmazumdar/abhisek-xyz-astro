@@ -1,0 +1,150 @@
+---
+import DefaultLayout from '../layouts/DefaultLayout.astro';
+import BookmarkCard from '../components/BookmarkCard.astro';
+import { getCollection } from 'astro:content';
+
+const bookmarks = await getCollection('bookmarks');
+const total = bookmarks.length;
+const INITIAL_BATCH = 9;
+---
+
+<DefaultLayout title="Bookmarks" description="Links I keep coming back to.">
+  <section class="bookmarks-page">
+
+    <!-- Page header -->
+    <div class="bookmarks-head">
+      <div class="bookmarks-head-left">
+        <h1>Bookmarks</h1>
+        <p class="bookmarks-subtitle">Links I keep coming back to.</p>
+      </div>
+      <div class="bookmarks-meta">
+        <span class="bookmarks-meta-item">{total} links</span>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="bookmarks-grid" id="bookmarks-grid">
+      {bookmarks.map((bookmark, i) => (
+        <div class="bookmark-item" data-index={i} style={i >= INITIAL_BATCH ? 'display:none' : ''}>
+          <BookmarkCard
+            name={bookmark.data.name}
+            url={bookmark.data.url}
+            reason={bookmark.data.reason}
+            description={bookmark.data.description}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- Infinite scroll sentinel -->
+    {total > INITIAL_BATCH && (
+      <div id="scroll-sentinel" aria-hidden="true"></div>
+    )}
+
+  </section>
+</DefaultLayout>
+
+<script>
+  const sentinel = document.getElementById('scroll-sentinel');
+  if (sentinel) {
+    const BATCH = 9;
+    let shown = document.querySelectorAll('.bookmark-item:not([style*="none"])').length;
+    const allItems = Array.from(document.querySelectorAll('.bookmark-item[style*="none"]')) as HTMLElement[];
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      const next = allItems.splice(0, BATCH);
+      next.forEach(el => { el.style.display = ''; });
+      shown += next.length;
+      if (allItems.length === 0) observer.disconnect();
+    }, { rootMargin: '200px' });
+
+    observer.observe(sentinel);
+  }
+</script>
+
+<style>
+  .bookmarks-page {
+    font-size: 1rem;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  .bookmarks-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgb(var(--gray-light));
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: rgb(var(--black));
+    margin: 0 0 0.2rem;
+  }
+
+  .bookmarks-subtitle {
+    font-size: 0.875rem;
+    color: rgb(var(--gray));
+    margin: 0;
+  }
+
+  .bookmarks-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .bookmarks-meta-item {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    background: rgb(var(--gray-light));
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  :global([data-theme="dark"]) .bookmarks-meta-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Grid ────────────────────────────────── */
+  .bookmarks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .bookmarks-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 420px) {
+    .bookmarks-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Sentinel ────────────────────────────── */
+  #scroll-sentinel {
+    height: 1px;
+    margin-top: 2rem;
+  }
+
+  /* ── Mobile header ───────────────────────── */
+  @media (max-width: 560px) {
+    .bookmarks-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+</style>

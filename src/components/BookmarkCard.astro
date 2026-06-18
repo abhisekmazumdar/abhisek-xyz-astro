@@ -19,10 +19,15 @@ const { name, url, reason, description } = Astro.props;
   <div class="card-inner">
     <div class="card-top">
       <span class="card-name">{name}</span>
-      <span class="card-arrow" aria-hidden="true">↗</span>
+      <svg class="card-external" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M1 10L10 1M10 1H4M10 1V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
-    <p class="card-reason">{reason}</p>
     <p class="card-description">{description}</p>
+    <div class="card-why">
+      <span class="card-why-label">Why</span>
+      <p class="card-reason">{reason}</p>
+    </div>
   </div>
 </a>
 
@@ -95,19 +100,45 @@ const { name, url, reason, description } = Astro.props;
     color: var(--accent);
   }
 
-  .card-arrow {
-    font-size: 0.85rem;
-    color: rgb(var(--gray));
+  .card-external {
     flex-shrink: 0;
+    color: rgb(var(--gray));
     opacity: 0;
     transform: translate(-2px, 2px);
     transition: opacity 0.15s, transform 0.15s, color 0.15s;
   }
 
-  .bookmark-card:hover .card-arrow {
+  .bookmark-card:hover .card-external {
     opacity: 1;
     color: var(--accent);
     transform: translate(0, 0);
+  }
+
+  .card-description {
+    font-size: 0.8rem;
+    color: rgb(var(--gray));
+    margin: 0;
+    line-height: 1.55;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-why {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .card-why-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
   }
 
   .card-reason {
@@ -119,18 +150,6 @@ const { name, url, reason, description } = Astro.props;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .card-description {
-    font-size: 0.8rem;
-    color: rgb(var(--gray));
-    margin: 0;
-    line-height: 1.55;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }

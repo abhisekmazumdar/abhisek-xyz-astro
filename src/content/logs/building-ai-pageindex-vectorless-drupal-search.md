@@ -3,7 +3,7 @@ title: "I built a Drupal module for vectorless document search"
 description: "Building ai_pageindex: a Drupal VDB provider that uses LLM reasoning over hierarchical tree indexes instead of embeddings."
 pubDate: 2026-06-27
 coverImage: ../../assets/logs/building_ai_pageindex.jpeg
-coverImageCaption: Somewhere on a laptop
+coverImageCaption: On the streets of Kuala Lumpur, Malaysia
 ---
 
 It started with a Google Meet where everyone bunked.

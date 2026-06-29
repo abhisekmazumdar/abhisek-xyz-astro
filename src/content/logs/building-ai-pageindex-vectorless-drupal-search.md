@@ -52,17 +52,17 @@ The VectifyAI benchmarks on FinanceBench show 98.7% accuracy against ~60-75% for
 
 I ran both backends side by side against the same content: same Drupal site, same 9 nodes, same queries.
 
-| Metric | PageIndex | Milvus |
-|---|---|---|
-| Latency, short flat articles | 2,922 ms | 1,074 ms |
-| Latency, long structured docs | 6,869 ms | 939 ms |
-| Returns zero results when no match | Yes | Never |
-| Zero-result queries (flat, 16 total) | 5 | 0 |
-| Zero-result queries (long, 20 total) | 1 | 0 |
-| Top-1 accuracy | 100% (flat), 95% (long) | Equal on both |
-| Score range | 0.75–0.95 | 0.00–0.73 |
-| Index-time API cost | None | ~$0.000090 per 9 docs |
-| Avg cost per query | ~$0.015 (LLM tokens) | ~$0.0000002 (embed only) |
+| Metric                               | PageIndex               | Milvus                   |
+| ------------------------------------ | ----------------------- | ------------------------ |
+| Latency, short flat articles         | 2,922 ms                | 1,074 ms                 |
+| Latency, long structured docs        | 6,869 ms                | 939 ms                   |
+| Returns zero results when no match   | Yes                     | Never                    |
+| Zero-result queries (flat, 16 total) | 5                       | 0                        |
+| Zero-result queries (long, 20 total) | 1                       | 0                        |
+| Top-1 accuracy                       | 100% (flat), 95% (long) | Equal on both            |
+| Score range                          | 0.75–0.95               | 0.00–0.73                |
+| Index-time API cost                  | None                    | ~$0.000090 per 9 docs    |
+| Avg cost per query                   | ~$0.015 (LLM tokens)    | ~$0.0000002 (embed only) |
 
 **Short flat articles (4 nodes):** PageIndex averaged 2,922 ms per query against Milvus at 1,074 ms. PageIndex returned zero results on 5 of 16 queries (things like "vitamins", "emperors", "exercise and wellness"), where the concept was loosely related at best. Milvus returned results for all 16, but with confidence scores in the 0.20-0.39 range on those weak queries. When PageIndex did return a result, it was the right one every time.
 
@@ -101,12 +101,14 @@ All four are now filed and the patches are in `upstream-issues/` in the `ai_page
 ## What it is and isn't for
 
 Use this module when:
+
 - Content is long-form and hierarchically structured (documentation, manuals, policies, guides)
 - Precision matters more than recall: showing nothing is better than showing a weak result
 - You can't use an external embedding API (privacy, cost, air-gapped environment)
 - You want the search to reason about document structure, not just text similarity
 
 Use Milvus or another vector DB when:
+
 - Latency is critical: sub-second is required
 - Content is short and flat (product listings, short articles, FAQ items)
 - Recall matters: you want to surface everything possibly relevant
@@ -121,6 +123,4 @@ If you're one of the organizers at [DAP](https://www.drupalpune.in/drupalers-ass
 
 Being transparent about this matters, because it's relevant for anything going into the Drupal community.
 
-A large part of the module was written with Claude Code: the plugin scaffold, the API client, the DDEV sidecar configuration, the README, and this write-up. I directed the work, made every architectural decision, debugged the actual failures when things broke (and several things broke), and reviewed most of the code before it went anywhere.
-
-The ai_search bugs were mine to find. That's where the interesting work actually lived.
+A large part of the module was written with Claude Code: the plugin scaffold, the API client, the DDEV sidecar configuration, the README, and some write-up. I directed the work, made every architectural decision, debugged the actual failures when things broke (and several things broke), and reviewed majority of the code before it went live.

@@ -27,4 +27,14 @@ const logs = defineCollection({
 	}),
 });
 
-export const collections = { blog, logs };
+const bookmarks = defineCollection({
+	loader: glob({ base: './src/content/bookmarks', pattern: '**/*.md' }),
+	schema: z.object({
+		name: z.string(),
+		url: z.string().url(),
+		reason: z.string(),
+		description: z.string(),
+	}),
+});
+
+export const collections = { blog, logs, bookmarks };

@@ -1,0 +1,156 @@
+---
+export interface Props {
+  name: string;
+  url: string;
+  reason: string;
+  description: string;
+}
+
+const { name, url, reason, description } = Astro.props;
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="bookmark-card"
+  aria-label={`${name} — opens in new tab`}
+>
+  <div class="card-inner">
+    <div class="card-top">
+      <span class="card-name">{name}</span>
+      <svg class="card-external" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M1 10L10 1M10 1H4M10 1V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="card-description">{description}</p>
+    <div class="card-why">
+      <span class="card-why-label">Why</span>
+      <p class="card-reason">{reason}</p>
+    </div>
+  </div>
+</a>
+
+<style>
+  .bookmark-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgb(var(--gray-light));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    overflow: hidden;
+  }
+
+  .bookmark-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--accent-rgb), 0.4);
+    box-shadow:
+      0 4px 16px rgba(var(--accent-rgb), 0.12),
+      0 1px 3px rgba(var(--accent-rgb), 0.08);
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .bookmark-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  :global([data-theme="dark"]) .bookmark-card {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  :global([data-theme="dark"]) .bookmark-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(var(--accent-rgb), 0.35);
+    box-shadow:
+      0 4px 20px rgba(var(--accent-rgb), 0.15),
+      0 0 0 1px rgba(var(--accent-rgb), 0.1);
+  }
+
+  .card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.25rem;
+    gap: 0.5rem;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .card-name {
+    font-size: 0.975rem;
+    font-weight: 700;
+    color: rgb(var(--black));
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+
+  .bookmark-card:hover .card-name {
+    color: var(--accent);
+  }
+
+  .card-external {
+    flex-shrink: 0;
+    color: rgb(var(--gray));
+    opacity: 0;
+    transform: translate(-2px, 2px);
+    transition: opacity 0.15s, transform 0.15s, color 0.15s;
+  }
+
+  .bookmark-card:hover .card-external {
+    opacity: 1;
+    color: var(--accent);
+    transform: translate(0, 0);
+  }
+
+  .card-description {
+    font-size: 0.8rem;
+    color: rgb(var(--gray));
+    margin: 0;
+    line-height: 1.55;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-why {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .card-why-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  .card-reason {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0.8;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
